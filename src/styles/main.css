@@ -1,0 +1,3 @@
+.list li {
+  transition: transform 500ms;
+}
