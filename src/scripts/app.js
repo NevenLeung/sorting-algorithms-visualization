@@ -17,44 +17,59 @@ console.log(arr);
 const $list = document.getElementsByClassName('list')[0];
 const button = document.querySelector('.swap-button');
 
-button.addEventListener('click', function () {
-  let arr = Array.from($list.children);
-
-  let firstIndex = 0;
-  let lastIndex = 4;
-  // let lastIndex = arr.length - 1;
-
-  // 要插入到firstIndex所在的位置，需要使用后面一个元素
-  // let frontNodeReference = arr[firstIndex + 1];
-
-  // console.log(arr[lastIndex]);
-  // console.log($list.lastElementChild);
-  // console.log(arr[lastIndex] === $list.lastElementChild);
-
-  //  将前面的节点插入到后面
-  if (arr[lastIndex] === $list.lastElementChild) {
-    $list.appendChild(arr[firstIndex]);
-  } else {
-    $list.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
-  }
-
-  // 将后面的节点插入到前面
-  $list.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
-
-}, false);
-
 function swap(firstIndex, lastIndex) {
-  let arr = Array.from($list.children);
+  const arr = Array.from($list.children);
+
+  const firstEl = arr[firstIndex];
+  const lastEl = arr[lastIndex];
+
+  // 节点位置
+  const firstTop = firstEl.offsetTop;
+  const lastTop = lastEl.offsetTop;
+
+  const diff_Y = Math.abs(firstTop - lastTop);
 
   // 动画
+  const animationKeyframesForFirstEl = [
+    { transform: 'translateY(0px)' },
+    { transform: `translateY(${diff_Y}px)` }
+  ];
 
-  //  将前面的节点插入到后面
-  if (arr[lastIndex] === $list.lastElementChild) {
-    $list.appendChild(arr[firstIndex]);
-  } else {
-    $list.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
-  }
+  const animationKeyframesForlastEl = [
+    { transform: 'translateY(0px)' },
+    { transform: `translateY(${-diff_Y}px)` }
+  ];
 
-  // 将后面的节点插入到前面
-  $list.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
+  const animationOption = {
+    duration: 1000,
+  };
+
+  firstEl.animate(
+    animationKeyframesForFirstEl,
+    animationOption
+  );
+
+  lastEl.animate(
+    animationKeyframesForlastEl,
+    animationOption
+  );
+
+  firstEl.classList.add('first-item');
+  lastEl.classList.add('last-item');
+
+  setTimeout(function () {
+    //  将前面的节点插入到后面
+    if (arr[lastIndex] === $list.lastElementChild) {
+      $list.appendChild(arr[firstIndex]);
+    } else {
+      $list.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
+    }
+
+    // 将后面的节点插入到前面
+    $list.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
+
+    firstEl.classList.remove('first-item');
+    lastEl.classList.remove('last-item');
+
+  }, 999);
 }

@@ -1,3 +1,23 @@
+.list {
+  padding: 0;
+}
+
 .list li {
-  transition: transform 500ms;
+  list-style: none;
+  width: 200px;
+  transition: background-color 300ms;
+}
+
+.first-item {
+  background-color: salmon;
+  transition: background-color 300ms;
+}
+
+.last-item {
+  background-color: palegreen;
+  transition: background-color 300ms;
+}
+
+.bubble-sort {
+  display: flex;
 }
