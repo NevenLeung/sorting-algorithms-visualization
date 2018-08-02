@@ -1,0 +1,42 @@
+{
+  "name": "sorting-algorithms-visualization",
+  "version": "1.0.0",
+  "description": "Using Vanilla JS to visualise sorting algorithms process.",
+  "scripts": {
+    "dev": "webpack-dev-server --config ./config/webpack.dev.config.js",
+    "build": "webpack --config ./config/webpack.prod.config.js",
+    "doc": "webpack --config ./config/webpack.doc.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NevenLeung/sorting-algorithms-visualization"
+  },
+  "keywords": [
+    "sort",
+    "sorting",
+    "sorting algorithms",
+    "sorting algorithms visualization"
+  ],
+  "author": "NevenLeung",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NevenLeung/sorting-algorithms-visualization/issues"
+  },
+  "homepage": "https://github.com/NevenLeung/sorting-algorithms-visualization#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^1.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.4.1",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-merge": "^4.1.3"
+  }
+}
