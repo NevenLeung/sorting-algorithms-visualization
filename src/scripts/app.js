@@ -12,10 +12,10 @@ const domOperationModule = domOperationWrapper();
 const arr = [5, 4, 3, 2, 1];
 
 // for (let i = 0, n = arr.length, temp; i < n; i += 1) {
-//   for (let j = i + 1; j < n; j += 1) {
-//     if (arr[i] > arr[j]) {
-//       temp = arr[i];
-//       arr[i] = arr[j];
+//   for (let j = n - 1; j > i; j -= 1) {
+//     if (arr[j - 1] > arr[j]) {
+//       temp = arr[j - 1];
+//       arr[j - 1] = arr[j];
 //       arr[j] = temp;
 //     }
 //   }
@@ -36,12 +36,12 @@ async function bubbleSort(parentNode) {
   let swapCounter = 0;
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
-    for (let j = i + 1; j < n; j += 1) {
+    for (let j = n - 1; j > i; j -= 1) {
       // todo 标记正在进行比较的item
       // await delay(500);
 
-      if (parseInt(arr[i].dataset.value) > parseInt(arr[j].dataset.value)) {
-        swap(i, j, parentNode);
+      if (parseInt(arr[j - 1].dataset.value) > parseInt(arr[j].dataset.value)) {
+        swap(j - 1, j, parentNode);
         await delay(1200);
 
         arr = Array.from(parentNode.children);
