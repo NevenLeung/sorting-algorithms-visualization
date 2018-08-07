@@ -8,8 +8,23 @@
   transition: background-color 300ms;
 }
 
+.showcase {
+  display: flex;
+}
+
 .sorting-wrapper {
 
+}
+
+.sorting-display {
+  margin: 5px 10px;
+}
+
+.sorting-stats {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .bubble-sort {
@@ -50,4 +65,8 @@
   100% {
     opacity: 1;
   }
+}
+
+.button:disabled {
+  cursor: not-allowed;
 }

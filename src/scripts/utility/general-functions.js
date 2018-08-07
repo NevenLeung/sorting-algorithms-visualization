@@ -1,4 +1,14 @@
 /**
+ * @module General Function Module
+ *
+ * 通用函数模块
+ *
+ * @export { createNewElementNode, stringToBoolean }
+ */
+
+// -------------------- module start -------------------
+
+/**
  * createNewElementNode()
  *
  * 自定义创建元素节点方法

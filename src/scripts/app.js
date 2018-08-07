@@ -1,15 +1,13 @@
 import '../styles/main.css';
 
-import './polyfills.js';
+import './utility/polyfills.js';
 
-import { bubbleSortWrapper } from "./dom-elements.js";
-import { createNewElementNode } from "./general-methods.js";
-import domOperationWrapper from './dom-operations.js';
+import { $bubbleSortWrapper } from "./DOM/DOM-elements.js";
+import { createNewElementNode } from "./utility/general-functions.js";
+import DOM_OperationModule from './DOM/DOM-operations.js';
 
-const domOperationModule = domOperationWrapper();
-
-// const arr = [3, 1, 5, 2, 4];
-const arr = [5, 4, 3, 2, 1];
+const arr = [3, 1, 5, 2, 4];
+// const arr = [5, 4, 3, 2, 1];
 
 // for (let i = 0, n = arr.length, temp; i < n; i += 1) {
 //   for (let j = n - 1; j > i; j -= 1) {
@@ -38,7 +36,12 @@ async function bubbleSort(parentNode) {
   for (let i = 0, n = arr.length; i < n; i += 1) {
     for (let j = n - 1; j > i; j -= 1) {
       // todo 标记正在进行比较的item
-      // await delay(500);
+      markComparisonItem(j - 1, j, parentNode).mark();
+      await delay(500);
+
+      comparisonCounter += 1;
+      statsDisplay(parentNode).comparisonAdd();
+
 
       if (parseInt(arr[j - 1].dataset.value) > parseInt(arr[j].dataset.value)) {
         swap(j - 1, j, parentNode);
@@ -47,17 +50,23 @@ async function bubbleSort(parentNode) {
         arr = Array.from(parentNode.children);
 
         swapCounter += 1;
+        statsDisplay(parentNode).swapAdd();
+
+        // 发生了交换，则按交换后的顺序取消对应的样式
+        markComparisonItem(j, j - 1, parentNode).removeMark();
+      } else {
+        // 没有发生交换，按原来的顺序取消应该的样式
+        markComparisonItem(j - 1, j, parentNode).removeMark();
       }
 
-      comparisonCounter += 1;
     }
   }
 
   console.log(`The number of comparison is ${comparisonCounter}.`);
   console.log(`The number of swapping is ${swapCounter}.`);
 
-  const showcaseWrapper = domOperationModule.findClosestAncestor(parentNode, '.showcase');
-  enableResetButton(showcaseWrapper);
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+  enableResetButton($showcaseWrapper);
 }
 
 function delay(timeout) {
@@ -76,16 +85,32 @@ function swap(firstIndex, lastIndex, parentNode) {
 
   const diff_X = Math.abs(firstLeft - lastLeft);
 
-  // 左右交换动画
-  const animationKeyframesForFirstEl = [
-    { transform: 'translateX(0px)' },
-    { transform: `translateX(${diff_X}px)` }
-  ];
+  let animationKeyframesForFirstEl, animationKeyframesForLastEl;
 
-  const animationKeyframesForLastEl = [
-    { transform: 'translateX(0px)' },
-    { transform: `translateX(${-diff_X}px)` }
-  ];
+  // 左右交换动画
+
+  // 根据节点的位置相对关系，来设定移动的方向
+  if (firstLeft < lastLeft) {
+    animationKeyframesForFirstEl = [
+      { transform: 'translateX(0px)' },
+      { transform: `translateX(${diff_X}px)` }
+    ];
+
+    animationKeyframesForLastEl = [
+      { transform: 'translateX(0px)' },
+      { transform: `translateX(${-diff_X}px)` }
+    ];
+  } else {
+    animationKeyframesForFirstEl = [
+      { transform: 'translateX(0px)' },
+      { transform: `translateX(${-diff_X}px)` }
+    ];
+
+    animationKeyframesForLastEl = [
+      { transform: 'translateX(0px)' },
+      { transform: `translateX(${diff_X}px)` }
+    ];
+  }
 
   const animationOption = {
     duration: 1000,
@@ -101,9 +126,6 @@ function swap(firstIndex, lastIndex, parentNode) {
     animationOption
   );
 
-  firstEl.classList.add('first-item');
-  lastEl.classList.add('last-item');
-
   animation1.onfinish = function () {
     //  将前面的节点插入到后面
     if (arr[lastIndex] === parentNode.lastElementChild) {
@@ -112,14 +134,11 @@ function swap(firstIndex, lastIndex, parentNode) {
       parentNode.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
     }
 
-    firstEl.classList.remove('first-item');
   };
 
   animation2.onfinish = function () {
     // 将后面的节点插入到前面
     parentNode.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
-
-    lastEl.classList.remove('last-item');
   }
 }
 
@@ -130,37 +149,91 @@ function reset(parentNode) {
   });
 }
 
+function statsDisplay(parentNode) {
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+  const $numberOfComparison = DOM_OperationModule.query($showcaseWrapper, '.num-comparison');
+  const $numberOfSwap = DOM_OperationModule.query($showcaseWrapper, '.num-swap');
+  let comparisonCounter = parseInt($numberOfComparison.textContent);
+  let swapCounter = parseInt($numberOfSwap.textContent);
+
+  function reset() {
+    $numberOfComparison.textContent = 0;
+    $numberOfSwap.textContent = 0;
+  }
+  
+  function comparisonAdd() {
+    comparisonCounter += 1;
+    $numberOfComparison.textContent = comparisonCounter;
+  }
+  
+  function swapAdd() {
+    swapCounter += 1;
+    $numberOfSwap.textContent = swapCounter;
+  }
+
+  return {
+    reset,
+    comparisonAdd,
+    swapAdd
+  };
+}
+
+function markComparisonItem(index1, index2, parentNode) {
+  const arr = Array.from(parentNode.children);
+
+  const $firstEl = arr[index1];
+  const $secondEl = arr[index2];
+
+  function mark() {
+    $firstEl.classList.add('first-item');
+    $secondEl.classList.add('last-item');
+  }
+  
+  function removeMark() {
+    $firstEl.classList.remove('first-item');
+    $secondEl.classList.remove('last-item');
+  }
+
+  return {
+    mark,
+    removeMark
+  }
+}
+
 function playHandler(e) {
   const el = e.target;
-  const showcaseWrapper = domOperationModule.findClosestAncestor(el, '.showcase');
-  const sortingWrapper = domOperationModule.query(showcaseWrapper, '.sorting-wrapper');
-  const resetButton = domOperationModule.query(showcaseWrapper, '.reset-button');
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(el, '.showcase');
+  const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
+  const $resetButton = DOM_OperationModule.query($showcaseWrapper, '.reset-button');
 
   // hardcoded
-  bubbleSort(sortingWrapper);
+  bubbleSort($sortingWrapper);
   // 在动画开始时，禁止点击start和reset按钮
   el.setAttribute('disabled', 'true');
-  resetButton.setAttribute('disabled', 'true');
+  $resetButton.setAttribute('disabled', 'true');
 
 }
 
 function resetHandler(e) {
   const el = e.target;
-  const showcaseWrapper = domOperationModule.findClosestAncestor(el, '.showcase');
-  const sortingWrapper = domOperationModule.query(showcaseWrapper, '.sorting-wrapper');
-  const startButton = domOperationModule.query(showcaseWrapper, '.start-button');
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(el, '.showcase');
+  const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
+  const $startButton = DOM_OperationModule.query($showcaseWrapper, '.start-button');
 
-  reset(sortingWrapper);
-  sortInit(sortingWrapper);
+  reset($sortingWrapper);
+  sortInit($sortingWrapper);
 
   // 重置后可点击start按钮
-  startButton.removeAttribute('disabled');
+  $startButton.removeAttribute('disabled');
   el.setAttribute('disabled', 'true');
+
+  // 重置统计数据
+  statsDisplay($sortingWrapper).reset();
 }
 
-function enableResetButton(showcaseWrapper) {
-  const resetButton = domOperationModule.query(showcaseWrapper, '.reset-button');
-  resetButton.removeAttribute('disabled');
+function enableResetButton($showcaseWrapper) {
+  const $resetButton = DOM_OperationModule.query($showcaseWrapper, '.reset-button');
+  $resetButton.removeAttribute('disabled');
 }
 
 
@@ -170,4 +243,4 @@ const resetSortingButton = document.querySelector('.reset-button');
 startSortingButton.addEventListener('click', playHandler);
 resetSortingButton.addEventListener('click', resetHandler);
 
-sortInit(bubbleSortWrapper);
+sortInit($bubbleSortWrapper);
