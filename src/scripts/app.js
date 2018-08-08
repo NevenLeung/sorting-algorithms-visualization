@@ -6,8 +6,9 @@ import { $container, $bubbleSortWrapper, $selectSortWrapper } from "./DOM/DOM-el
 import { createNewElementNode } from "./utility/general-functions.js";
 import DOM_OperationModule from './DOM/DOM-operations.js';
 
-const arr = [3, 1, 5, 2, 4];
+// const arr = [3, 1, 5, 2, 4];
 // const arr = [5, 4, 3, 2, 1];
+const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
 
 // bubble sort
 
@@ -38,6 +39,51 @@ const arr = [3, 1, 5, 2, 4];
 // }
 
 // insert sort
+
+// for (let i = 1, j, n = arr.length; i <= n - 1; i += 1) {
+//   if (arr[i] < arr[i - 1]) {
+//     let waitForInsertion = arr[i];
+//
+//     for (j = i - 1; arr[j] > waitForInsertion; j -= 1) {
+//       arr[j + 1] = arr[j];
+//     }
+//     // j需要在外层作用域访问
+//     arr[j + 1] = waitForInsertion;
+//   }
+// }
+
+// quick sort
+
+// function partition(low, high, list) {
+//
+//   function swap(i, j, list) {
+//     [list[i], [list][j]] = [list[j], list[i]];
+//   }
+//
+//   let pivotValue = list[low];
+//   while (low < high) {
+//     while (low < high && list[high] >= pivotValue) {
+//       high -= 1;
+//     }
+//     swap(low, high, list);
+//     while (low < high && list[low] <= pivotValue) {
+//       low += 1;
+//     }
+//     swap(low, high, list);
+//   }
+//
+//   return low;
+//
+// }
+//
+// function qSort(low, high, list) {
+//   let pivot;
+//   if (low < high) {
+//     pivot = partition(low, high, list);
+//     qSort(low, pivot - 1, list);
+//     qSort(pivot + 1, high, list);
+//   }
+// }
 
 // console.log(arr);
 
@@ -95,8 +141,9 @@ async function selectSort(parentNode) {
   for (let i = 0, minIndex, n = arr.length; i < n - 1; i += 1) {
     minIndex = i;
 
-    statsDisplay(parentNode).comparisonAdd();
     for (let j = i + 1; j <= n - 1; j += 1) {
+      statsDisplay(parentNode).comparisonAdd();
+
       // 标记正在进行比较的item
       markComparisonItem(minIndex, j, parentNode).mark();
       await delay(500);
@@ -126,6 +173,10 @@ async function selectSort(parentNode) {
 
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
   enableResetButton($showcaseWrapper);
+}
+
+async function quickSort(parentNode) {
+
 }
 
 function delay(timeout) {

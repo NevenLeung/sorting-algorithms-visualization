@@ -1,11 +1,12 @@
-.list {
-  width: 200px;
-  padding: 0;
+.container {
+  display: flex;
 }
 
-.list li {
-  list-style: none;
-  transition: background-color 300ms;
+.section {
+  margin: 10px;
+  padding: 5px 20px;
+  border: 2px solid #eee;
+  border-radius: 10px;
 }
 
 .showcase {
