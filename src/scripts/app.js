@@ -2,12 +2,14 @@ import '../styles/main.css';
 
 import './utility/polyfills.js';
 
-import { $bubbleSortWrapper } from "./DOM/DOM-elements.js";
+import { $container, $bubbleSortWrapper, $selectSortWrapper } from "./DOM/DOM-elements.js";
 import { createNewElementNode } from "./utility/general-functions.js";
 import DOM_OperationModule from './DOM/DOM-operations.js';
 
 const arr = [3, 1, 5, 2, 4];
 // const arr = [5, 4, 3, 2, 1];
+
+// bubble sort
 
 // for (let i = 0, n = arr.length, temp; i < n; i += 1) {
 //   for (let j = n - 1; j > i; j -= 1) {
@@ -18,6 +20,26 @@ const arr = [3, 1, 5, 2, 4];
 //     }
 //   }
 // }
+
+// select sort
+
+// for (let i = 0, n = arr.length; i < n - 1; i += 1) {
+//   let min = i;
+//   for (let j = i + 1; j <= n - 1; j += 1) {
+//     if (arr[min] > arr[j]) {
+//       min = j;
+//     }
+//   }
+//   if (min !== i) {
+//     let temp = arr[i];
+//     arr[i] = arr[min];
+//     arr[min] = temp;
+//   }
+// }
+
+// insert sort
+
+// console.log(arr);
 
 function sortInit(parentNode) {
   arr.forEach(n => {
@@ -30,18 +52,17 @@ function sortInit(parentNode) {
 
 // bubble sort
 async function bubbleSort(parentNode) {
-  let comparisonCounter = 0;
-  let swapCounter = 0;
+  // let comparisonCounter = 0;
+  // let swapCounter = 0;
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
     for (let j = n - 1; j > i; j -= 1) {
-      // todo 标记正在进行比较的item
+      // 标记正在进行比较的item
       markComparisonItem(j - 1, j, parentNode).mark();
       await delay(500);
 
-      comparisonCounter += 1;
+      // comparisonCounter += 1;
       statsDisplay(parentNode).comparisonAdd();
-
 
       if (parseInt(arr[j - 1].dataset.value) > parseInt(arr[j].dataset.value)) {
         swap(j - 1, j, parentNode);
@@ -49,7 +70,7 @@ async function bubbleSort(parentNode) {
 
         arr = Array.from(parentNode.children);
 
-        swapCounter += 1;
+        // swapCounter += 1;
         statsDisplay(parentNode).swapAdd();
 
         // 发生了交换，则按交换后的顺序取消对应的样式
@@ -62,8 +83,46 @@ async function bubbleSort(parentNode) {
     }
   }
 
-  console.log(`The number of comparison is ${comparisonCounter}.`);
-  console.log(`The number of swapping is ${swapCounter}.`);
+  // console.log(`The number of comparison is ${comparisonCounter}.`);
+  // console.log(`The number of swapping is ${swapCounter}.`);
+
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+  enableResetButton($showcaseWrapper);
+}
+
+async function selectSort(parentNode) {
+  let arr = Array.from(parentNode.children);
+  for (let i = 0, minIndex, n = arr.length; i < n - 1; i += 1) {
+    minIndex = i;
+
+    statsDisplay(parentNode).comparisonAdd();
+    for (let j = i + 1; j <= n - 1; j += 1) {
+      // 标记正在进行比较的item
+      markComparisonItem(minIndex, j, parentNode).mark();
+      await delay(500);
+
+      markComparisonItem(minIndex, j, parentNode).removeMark();
+      if (parseInt(arr[minIndex].dataset.value) > parseInt(arr[j].dataset.value)) {
+        minIndex = j;
+      }
+    }
+    if (minIndex !== i) {
+      markComparisonItem(i, minIndex, parentNode).mark();
+
+      swap(i , minIndex, parentNode);
+      await delay(1200);
+
+      arr = Array.from(parentNode.children);
+
+      statsDisplay(parentNode).swapAdd();
+
+      // 发生了交换，则按交换后的顺序取消对应的样式
+      markComparisonItem(minIndex, i, parentNode).removeMark();
+    } else {
+      // 没有发生交换，按原来的顺序取消应该的样式
+      // markComparisonItem(i, minIndex, parentNode).removeMark();
+    }
+  }
 
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
   enableResetButton($showcaseWrapper);
@@ -200,23 +259,32 @@ function markComparisonItem(index1, index2, parentNode) {
   }
 }
 
-function playHandler(e) {
-  const el = e.target;
-  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(el, '.showcase');
+function startSorting($sortingWrapper) {
+  if ($sortingWrapper.matches('.bubble-sort')) {
+    bubbleSort($sortingWrapper);
+  }
+  if ($sortingWrapper.matches('.select-sort')) {
+    selectSort($sortingWrapper);
+  }
+}
+
+function playHandler($el) {
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor($el, '.showcase');
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
   const $resetButton = DOM_OperationModule.query($showcaseWrapper, '.reset-button');
 
   // hardcoded
-  bubbleSort($sortingWrapper);
+  // bubbleSort($sortingWrapper);
+  startSorting($sortingWrapper);
+
   // 在动画开始时，禁止点击start和reset按钮
-  el.setAttribute('disabled', 'true');
+  $el.setAttribute('disabled', 'true');
   $resetButton.setAttribute('disabled', 'true');
 
 }
 
-function resetHandler(e) {
-  const el = e.target;
-  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(el, '.showcase');
+function resetHandler($el) {
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor($el, '.showcase');
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
   const $startButton = DOM_OperationModule.query($showcaseWrapper, '.start-button');
 
@@ -225,7 +293,7 @@ function resetHandler(e) {
 
   // 重置后可点击start按钮
   $startButton.removeAttribute('disabled');
-  el.setAttribute('disabled', 'true');
+  $el.setAttribute('disabled', 'true');
 
   // 重置统计数据
   statsDisplay($sortingWrapper).reset();
@@ -236,11 +304,23 @@ function enableResetButton($showcaseWrapper) {
   $resetButton.removeAttribute('disabled');
 }
 
+function appOnClick(e) {
+  const $el = e.target;
 
-const startSortingButton = document.querySelector('.start-button');
-const resetSortingButton = document.querySelector('.reset-button');
+  if($el.matches('.start-button')) {
+    playHandler($el);
+  }
+  if($el.matches('.reset-button')) {
+    resetHandler($el);
+  }
+}
 
-startSortingButton.addEventListener('click', playHandler);
-resetSortingButton.addEventListener('click', resetHandler);
+function appInit() {
+  sortInit($bubbleSortWrapper);
+  sortInit($selectSortWrapper);
 
-sortInit($bubbleSortWrapper);
+  $container.addEventListener('click', appOnClick, false);
+}
+
+
+appInit();

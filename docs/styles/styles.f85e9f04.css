@@ -27,7 +27,7 @@
   align-items: center;
 }
 
-.bubble-sort {
+.sorting-wrapper {
   display: flex;
   align-items: flex-end;
 }
