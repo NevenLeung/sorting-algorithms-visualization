@@ -54,6 +54,16 @@
   transition: background-color 300ms;
 }
 
+.other-item {
+  background-color: aqua;
+  transition: background-color 300ms;
+}
+
+.main-item {
+  background-color: mediumpurple;
+  transition: background-color 300ms;
+}
+
 .twinkle {
   animation: opacity-changing 100ms 2;
 }

@@ -98,13 +98,12 @@ function sortInit(parentNode) {
 
 // bubble sort
 async function bubbleSort(parentNode) {
-  // let comparisonCounter = 0;
-  // let swapCounter = 0;
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
     for (let j = n - 1; j > i; j -= 1) {
       // 标记正在进行比较的item
-      markComparisonItem(j - 1, j, parentNode).mark();
+      markComparisonItem(parentNode).markTwoItem(j - 1, j);
+
       await delay(500);
 
       // comparisonCounter += 1;
@@ -120,18 +119,17 @@ async function bubbleSort(parentNode) {
         statsDisplay(parentNode).swapAdd();
 
         // 发生了交换，则按交换后的顺序取消对应的样式
-        markComparisonItem(j, j - 1, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(j, j - 1);
+
       } else {
         // 没有发生交换，按原来的顺序取消应该的样式
-        markComparisonItem(j - 1, j, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(j - 1, j);
       }
 
     }
   }
 
-  // console.log(`The number of comparison is ${comparisonCounter}.`);
-  // console.log(`The number of swapping is ${swapCounter}.`);
-
+  // 恢复reset button
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
   enableResetButton($showcaseWrapper);
 }
@@ -145,16 +143,16 @@ async function selectSort(parentNode) {
       statsDisplay(parentNode).comparisonAdd();
 
       // 标记正在进行比较的item
-      markComparisonItem(minIndex, j, parentNode).mark();
+      markComparisonItem(parentNode).markTwoItem(minIndex, j);
       await delay(500);
+      markComparisonItem(parentNode).removeTwoMark(minIndex, j);
 
-      markComparisonItem(minIndex, j, parentNode).removeMark();
       if (parseInt(arr[minIndex].dataset.value) > parseInt(arr[j].dataset.value)) {
         minIndex = j;
       }
     }
     if (minIndex !== i) {
-      markComparisonItem(i, minIndex, parentNode).mark();
+      markComparisonItem(parentNode).markTwoItem(i, minIndex);
 
       swap(i , minIndex, parentNode);
       await delay(1200);
@@ -164,10 +162,7 @@ async function selectSort(parentNode) {
       statsDisplay(parentNode).swapAdd();
 
       // 发生了交换，则按交换后的顺序取消对应的样式
-      markComparisonItem(minIndex, i, parentNode).removeMark();
-    } else {
-      // 没有发生交换，按原来的顺序取消应该的样式
-      // markComparisonItem(i, minIndex, parentNode).removeMark();
+      markComparisonItem(parentNode).removeTwoMark(minIndex, i);
     }
   }
 
@@ -190,6 +185,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
   async function partition(parentNode, low, high) {
     let list = Array.from(parentNode.children);
 
+    let initLow = low;
+    let initHigh = high;
+
     let pivotIndex = low;
     let pivotValue = parseInt(list[low].dataset.value);
 
@@ -198,10 +196,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         statsDisplay(parentNode).comparisonAdd();
 
         // 标记正在进行比较的item
-        markComparisonItem(pivotIndex, high, parentNode).mark();
+        markComparisonItem(parentNode).markTwoItem(pivotIndex, high);
         await delay(500);
-
-        markComparisonItem(pivotIndex, high, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(pivotIndex, high);
 
         high -= 1;
       }
@@ -210,12 +207,12 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
 
-        markComparisonItem(low, high, parentNode).mark();
+        markComparisonItem(parentNode).markTwoItem(low, high);
 
         swap(low, high, parentNode);
         await delay(1200);
 
-        markComparisonItem(high, low, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(high, low);
 
         list = Array.from(parentNode.children);
       }
@@ -223,10 +220,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
       while (low < high && parseInt(list[low].dataset.value) <= pivotValue) {
         statsDisplay(parentNode).comparisonAdd();
 
-        markComparisonItem(low, pivotIndex, parentNode).mark();
+        markComparisonItem(parentNode).markTwoItem(low, pivotIndex);
         await delay(500);
-
-        markComparisonItem(low, pivotIndex, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(low, pivotIndex);
 
         low += 1;
       }
@@ -235,16 +231,28 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
 
-        markComparisonItem(low, high, parentNode).mark();
+        markComparisonItem(parentNode).markTwoItem(low, high);
 
         swap(low, high, parentNode);
         await delay(1200);
 
-        markComparisonItem(high, low, parentNode).removeMark();
+        markComparisonItem(parentNode).removeTwoMark(high, low);
 
         list = Array.from(parentNode.children);
       }
     }
+
+    // 标识之前比较的区域，标识pivot
+    // 但貌似出现了一些问题，一开始pivot就被标记，而结束时才标记整个区域？
+    markComparisonItem(parentNode).markMultipleItems(initLow, initHigh);
+    markComparisonItem(parentNode).markOneItem(low);
+
+    await delay(1500);
+
+    markComparisonItem(parentNode).removeMultipleMark(initLow, initHigh);
+    markComparisonItem(parentNode).removeOneMark(low);
+
+    await delay(500);
 
     return low;
   }
@@ -359,25 +367,58 @@ function statsDisplay(parentNode) {
   };
 }
 
-function markComparisonItem(index1, index2, parentNode) {
+function markComparisonItem(parentNode) {
   const arr = Array.from(parentNode.children);
 
-  const $firstEl = arr[index1];
-  const $secondEl = arr[index2];
+  function markOneItem(index) {
+    const $item = arr[index];
+    $item.classList.add('main-item');
+  }
 
-  function mark() {
+  function removeOneMark(index) {
+    const $item = arr[index];
+    $item.classList.remove('main-item');
+  }
+  
+  function markTwoItem(index1, index2) {
+    const $firstEl = arr[index1];
+    const $secondEl = arr[index2];
+
     $firstEl.classList.add('first-item');
     $secondEl.classList.add('last-item');
   }
   
-  function removeMark() {
+  function removeTwoMark(index1, index2) {
+    const $firstEl = arr[index1];
+    const $secondEl = arr[index2];
+
     $firstEl.classList.remove('first-item');
     $secondEl.classList.remove('last-item');
   }
+  
+  function markMultipleItems(startIndex, endIndex) {
+    const $items = arr.slice(startIndex, endIndex + 1);
 
+    $items.forEach(($item) => {
+      $item.classList.add('other-item');
+    });
+  }
+
+  function removeMultipleMark(startIndex, endIndex) {
+    const items = arr.slice(startIndex, endIndex + 1);
+
+    items.forEach((item) => {
+      item.classList.remove('other-item');
+    });
+  }
+  
   return {
-    mark,
-    removeMark
+    markOneItem,
+    removeOneMark,
+    markTwoItem,
+    removeTwoMark,
+    markMultipleItems,
+    removeMultipleMark
   }
 }
 
