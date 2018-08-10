@@ -2,7 +2,7 @@ import '../styles/main.css';
 
 import './utility/polyfills.js';
 
-import { $container, $bubbleSortWrapper, $selectSortWrapper } from "./DOM/DOM-elements.js";
+import { $container, $bubbleSortWrapper, $selectSortWrapper, $quickSortWrapper } from "./DOM/DOM-elements.js";
 import { createNewElementNode } from "./utility/general-functions.js";
 import DOM_OperationModule from './DOM/DOM-operations.js';
 
@@ -44,7 +44,7 @@ const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
 //   if (arr[i] < arr[i - 1]) {
 //     let waitForInsertion = arr[i];
 //
-//     for (j = i - 1; arr[j] > waitForInsertion; j -= 1) {
+//     for (j = i - 1; j >= 0 && waitForInsertion < arr[j] ; j -= 1) {
 //       arr[j + 1] = arr[j];
 //     }
 //     // j需要在外层作用域访问
@@ -56,10 +56,6 @@ const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
 
 // function partition(low, high, list) {
 //
-//   function swap(i, j, list) {
-//     [list[i], [list][j]] = [list[j], list[i]];
-//   }
-//
 //   let pivotValue = list[low];
 //   while (low < high) {
 //     while (low < high && list[high] >= pivotValue) {
@@ -70,6 +66,10 @@ const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
 //       low += 1;
 //     }
 //     swap(low, high, list);
+//   }
+//
+//   function swap(i, j, list) {
+//     [list[i], list[j]] = [list[j], list[i]];
 //   }
 //
 //   return low;
@@ -175,8 +175,79 @@ async function selectSort(parentNode) {
   enableResetButton($showcaseWrapper);
 }
 
-async function quickSort(parentNode) {
+async function quickSort(parentNode, low = 0, high = parentNode.children.length - 1) {
+  if (low < high) {
+    let pivot = await partition(parentNode, low, high);
 
+    await quickSort(parentNode, low, pivot - 1);
+    await quickSort(parentNode, pivot + 1, high);
+  } else {
+    // 递归接近完成
+    const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+    enableResetButton($showcaseWrapper);
+  }
+
+  async function partition(parentNode, low, high) {
+    let list = Array.from(parentNode.children);
+
+    let pivotIndex = low;
+    let pivotValue = parseInt(list[low].dataset.value);
+
+    while (low < high) {
+      while (high > low && parseInt(list[high].dataset.value) >= pivotValue) {
+        statsDisplay(parentNode).comparisonAdd();
+
+        // 标记正在进行比较的item
+        markComparisonItem(pivotIndex, high, parentNode).mark();
+        await delay(500);
+
+        markComparisonItem(pivotIndex, high, parentNode).removeMark();
+
+        high -= 1;
+      }
+
+      // 防止出现下标相等时，无用交换的等待
+      if (low !== high) {
+        statsDisplay(parentNode).swapAdd();
+
+        markComparisonItem(low, high, parentNode).mark();
+
+        swap(low, high, parentNode);
+        await delay(1200);
+
+        markComparisonItem(high, low, parentNode).removeMark();
+
+        list = Array.from(parentNode.children);
+      }
+
+      while (low < high && parseInt(list[low].dataset.value) <= pivotValue) {
+        statsDisplay(parentNode).comparisonAdd();
+
+        markComparisonItem(low, pivotIndex, parentNode).mark();
+        await delay(500);
+
+        markComparisonItem(low, pivotIndex, parentNode).removeMark();
+
+        low += 1;
+      }
+
+      // 防止出现下标相等时，无用交换的等待
+      if (low !== high) {
+        statsDisplay(parentNode).swapAdd();
+
+        markComparisonItem(low, high, parentNode).mark();
+
+        swap(low, high, parentNode);
+        await delay(1200);
+
+        markComparisonItem(high, low, parentNode).removeMark();
+
+        list = Array.from(parentNode.children);
+      }
+    }
+
+    return low;
+  }
 }
 
 function delay(timeout) {
@@ -317,6 +388,9 @@ function startSorting($sortingWrapper) {
   if ($sortingWrapper.matches('.select-sort')) {
     selectSort($sortingWrapper);
   }
+  if ($sortingWrapper.matches('.quick-sort')) {
+    quickSort($sortingWrapper);
+  }
 }
 
 function playHandler($el) {
@@ -324,8 +398,6 @@ function playHandler($el) {
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
   const $resetButton = DOM_OperationModule.query($showcaseWrapper, '.reset-button');
 
-  // hardcoded
-  // bubbleSort($sortingWrapper);
   startSorting($sortingWrapper);
 
   // 在动画开始时，禁止点击start和reset按钮
@@ -369,6 +441,7 @@ function appOnClick(e) {
 function appInit() {
   sortInit($bubbleSortWrapper);
   sortInit($selectSortWrapper);
+  sortInit($quickSortWrapper);
 
   $container.addEventListener('click', appOnClick, false);
 }
