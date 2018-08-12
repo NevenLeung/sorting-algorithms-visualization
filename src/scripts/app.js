@@ -101,33 +101,36 @@ function sortInit(parentNode) {
 async function bubbleSort(parentNode) {
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
+    // 标记当前循环要编译的item范围
+    markComparisonItem(parentNode).markMultipleItems(i, n - 1);
+
     for (let j = n - 1; j > i; j -= 1) {
       // 标记正在进行比较的item
       markComparisonItem(parentNode).markTwoItem(j - 1, j);
 
       await delay(500);
-
-      // comparisonCounter += 1;
       statsDisplay(parentNode).comparisonAdd();
 
-      if (parseInt(arr[j - 1].dataset.value) > parseInt(arr[j].dataset.value)) {
+      if (getItemValue(arr, j - 1) > getItemValue(arr, j)) {
+        // 进行交换，节点位置的交换
         swap(j - 1, j, parentNode);
         await delay(1200);
 
+        // 使得arr为交换后的结果
         arr = Array.from(parentNode.children);
 
-        // swapCounter += 1;
         statsDisplay(parentNode).swapAdd();
 
         // 发生了交换，则按交换后的顺序取消对应的样式
         markComparisonItem(parentNode).removeTwoMark(j, j - 1);
-
       } else {
         // 没有发生交换，按原来的顺序取消应该的样式
         markComparisonItem(parentNode).removeTwoMark(j - 1, j);
       }
-
     }
+
+    markComparisonItem(parentNode).removeMultipleMark(i, n - 1);
+    await delay(500);
   }
 
   // 恢复reset button
@@ -140,6 +143,9 @@ async function selectSort(parentNode) {
   for (let i = 0, minIndex, n = arr.length; i < n - 1; i += 1) {
     minIndex = i;
 
+    // 标记当前循环要编译的item范围
+    markComparisonItem(parentNode).markMultipleItems(i, n - 1);
+
     for (let j = i + 1; j <= n - 1; j += 1) {
       statsDisplay(parentNode).comparisonAdd();
 
@@ -148,23 +154,29 @@ async function selectSort(parentNode) {
       await delay(500);
       markComparisonItem(parentNode).removeTwoMark(minIndex, j);
 
-      if (parseInt(arr[minIndex].dataset.value) > parseInt(arr[j].dataset.value)) {
+      if (getItemValue(arr, minIndex) > getItemValue(arr, j)) {
         minIndex = j;
       }
     }
     if (minIndex !== i) {
       markComparisonItem(parentNode).markTwoItem(i, minIndex);
+      // 标记准备交换的两个item，让人们知道是这两个元素准备发生交换
+      await delay(500);
 
+      // 进行交换，节点位置的交换
       swap(i , minIndex, parentNode);
       await delay(1200);
 
+      // 使得arr为交换后的结果
       arr = Array.from(parentNode.children);
 
       statsDisplay(parentNode).swapAdd();
-
       // 发生了交换，则按交换后的顺序取消对应的样式
       markComparisonItem(parentNode).removeTwoMark(minIndex, i);
     }
+
+    markComparisonItem(parentNode).removeMultipleMark(i, n - 1);
+    await delay(500);
   }
 
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
@@ -189,20 +201,22 @@ async function insertSort(parentNode) {
         // arr[j + 1] = arr[j];
         statsDisplay(parentNode).comparisonAdd();
 
-        markComparisonItem(parentNode).markTwoItem(j, i);
+        // 这里将标记的下标进行了交换，主要是让变化的下标使用蓝色
+        markComparisonItem(parentNode).markTwoItem(i, j);
 
         movingArray.push(arr[j]);
         await delay(500);
 
-        markComparisonItem(parentNode).removeTwoMark(j, i)
+        markComparisonItem(parentNode).removeTwoMark(i, j)
       }
 
-      await delay(500);
-
       // arr[j + 1] = insertItem;
-      markComparisonItem(parentNode).markOneItem(i);
+      markComparisonItem(parentNode).markPurple(i);
       // 这里的j， i-1，分别为上面循环中moving array的起始与结束item的下标
       markComparisonItem(parentNode).markMultipleItems(j + 1, i - 1);
+
+      // 标记准备'交换'的两个部分，让人们知道是这两个元素准备发生'交换'，实际发生的是节点插入
+      await delay(500);
 
       // 由于j的循环是从大到小进行的，因此需要将moving array进行一次翻转，才符合实际的顺序情况
       indexAfterInsert = await insert(i, movingArray.reverse(), parentNode);
@@ -212,7 +226,7 @@ async function insertSort(parentNode) {
 
       arr = Array.from(parentNode.children);
 
-      markComparisonItem(parentNode).removeOneMark(indexAfterInsert);
+      markComparisonItem(parentNode).removePurpleMark(indexAfterInsert);
 
       // 要视移动的方向来决定，其他item的下标
       if (i > indexAfterInsert) {
@@ -220,6 +234,8 @@ async function insertSort(parentNode) {
       } else {
         markComparisonItem(parentNode).removeMultipleMark(j - 1, i - 2);
       }
+
+      await delay(500);
     }
   }
 
@@ -241,19 +257,19 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
   }
 
   async function partition(parentNode, low, high) {
-    let list = Array.from(parentNode.children);
+    let arr = Array.from(parentNode.children);
 
     let initLow = low;
     let initHigh = high;
 
     let pivotIndex = low;
-    let pivotValue = parseInt(list[low].dataset.value);
+    let pivotValue = getItemValue(arr, low);
 
     // 标识之前比较的区域，标识pivot
     markComparisonItem(parentNode).markMultipleItems(initLow, initHigh);
 
     while (low < high) {
-      while (high > low && parseInt(list[high].dataset.value) >= pivotValue) {
+      while (high > low && getItemValue(arr, high) >= pivotValue) {
         statsDisplay(parentNode).comparisonAdd();
 
         // 标记正在进行比较的item
@@ -264,10 +280,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         high -= 1;
       }
 
-      // 防止出现下标相等时，无用交换的等待
+      // 防止下标相等时，出现无用交换的等待
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
-
         markComparisonItem(parentNode).markTwoItem(low, high);
 
         swap(low, high, parentNode);
@@ -275,10 +290,10 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
 
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
-        list = Array.from(parentNode.children);
+        arr = Array.from(parentNode.children);
       }
 
-      while (low < high && parseInt(list[low].dataset.value) <= pivotValue) {
+      while (low < high && getItemValue(arr, low) <= pivotValue) {
         statsDisplay(parentNode).comparisonAdd();
 
         markComparisonItem(parentNode).markTwoItem(low, pivotIndex);
@@ -288,10 +303,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         low += 1;
       }
 
-      // 防止出现下标相等时，无用交换的等待
+      // 防止下标相等时，出现无用交换的等待
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
-
         markComparisonItem(parentNode).markTwoItem(low, high);
 
         swap(low, high, parentNode);
@@ -299,16 +313,16 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
 
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
-        list = Array.from(parentNode.children);
+        arr = Array.from(parentNode.children);
       }
     }
 
-    markComparisonItem(parentNode).markPivotItem(low);
-
+    // 显示排序后pivot的位置，以及之前排序的范围
+    markComparisonItem(parentNode).markPurple(low);
     await delay(1500);
 
     markComparisonItem(parentNode).removeMultipleMark(initLow, initHigh);
-    markComparisonItem(parentNode).removePivotMark(low);
+    markComparisonItem(parentNode).removePurpleMark(low);
 
     await delay(500);
 
@@ -501,22 +515,32 @@ function statsDisplay(parentNode) {
 function markComparisonItem(parentNode) {
   const arr = Array.from(parentNode.children);
 
-  function markOneItem(index) {
+  function markGreen(index) {
+    const $item = arr[index];
+    $item.classList.add('first-item');
+  }
+
+  function removeGreenMark(index) {
+    const $item = arr[index];
+    $item.classList.remove('first-item');
+  }
+
+  function markBlue(index) {
     const $item = arr[index];
     $item.classList.add('last-item');
   }
 
-  function removeOneMark(index) {
+  function removeBlueMark(index) {
     const $item = arr[index];
     $item.classList.remove('last-item');
   }
 
-  function markPivotItem(index) {
+  function markPurple(index) {
     const $item = arr[index];
     $item.classList.add('pivot-item');
   }
 
-  function removePivotMark(index) {
+  function removePurpleMark(index) {
     const $item = arr[index];
     $item.classList.remove('pivot-item');
   }
@@ -554,12 +578,14 @@ function markComparisonItem(parentNode) {
   }
   
   return {
-    markOneItem,
-    markPivotItem,
+    markGreen,
+    markBlue,
+    markPurple,
     markTwoItem,
     markMultipleItems,
-    removeOneMark,
-    removePivotMark,
+    removeGreenMark,
+    removeBlueMark,
+    removePurpleMark,
     removeTwoMark,
     removeMultipleMark
   }

@@ -1,5 +1,6 @@
 .container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .section {
@@ -44,8 +45,14 @@
   transition: background-color 200ms;
 }
 
+.other-item {
+  /*background-color: #ffe770;*/
+  background-color: bisque;
+  transition: background-color 300ms;
+}
+
 .first-item {
-  background-color: palegreen;
+  background-color: #98FB98;
   transition: background-color 300ms;
 }
 
@@ -54,13 +61,8 @@
   transition: background-color 300ms;
 }
 
-.other-item {
-  background-color: aqua;
-  transition: background-color 300ms;
-}
-
-.main-item {
-  background-color: mediumpurple;
+.pivot-item {
+  background-color: #E0B0FF;
   transition: background-color 300ms;
 }
 
