@@ -2,13 +2,13 @@ import '../styles/main.css';
 
 import './utility/polyfills.js';
 
-import { $container, $bubbleSortWrapper, $selectSortWrapper, $quickSortWrapper } from "./DOM/DOM-elements.js";
+import { $container, $bubbleSortWrapper, $selectSortWrapper, $insertSortWrapper, $quickSortWrapper } from "./DOM/DOM-elements.js";
 import { createNewElementNode } from "./utility/general-functions.js";
 import DOM_OperationModule from './DOM/DOM-operations.js';
 
 // const arr = [3, 1, 5, 2, 4];
 // const arr = [5, 4, 3, 2, 1];
-const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
+const arr = [4, 6, 2, 9, 1, 7, 10, 3, 5, 8];
 
 // bubble sort
 
@@ -40,15 +40,16 @@ const arr = [4, 6, 2, 8, 1, 5, 9, 3, 10, 7];
 
 // insert sort
 
-// for (let i = 1, j, n = arr.length; i <= n - 1; i += 1) {
-//   if (arr[i] < arr[i - 1]) {
-//     let waitForInsertion = arr[i];
+// for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
+//   if (arr[i - 1] > arr[i]) {
+//     let insertItem = arr[i];
+//     let j;
 //
-//     for (j = i - 1; j >= 0 && waitForInsertion < arr[j] ; j -= 1) {
+//     for (j = i - 1; j >= 0 && insertItem < arr[j] ; j -= 1) {
 //       arr[j + 1] = arr[j];
 //     }
-//     // j需要在外层作用域访问
-//     arr[j + 1] = waitForInsertion;
+//
+//     arr[j + 1] = insertItem;
 //   }
 // }
 
@@ -170,6 +171,63 @@ async function selectSort(parentNode) {
   enableResetButton($showcaseWrapper);
 }
 
+async function insertSort(parentNode) {
+  let arr = Array.from(parentNode.children);
+
+  for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
+    if (getItemValue(arr, i - 1) > getItemValue(arr, i)) {
+      // let insertItem = arr[i];
+      let movingArray = [];
+      let j, indexAfterInsert;
+
+      markComparisonItem(parentNode).markTwoItem(i - 1, i);
+      await delay(500);
+      markComparisonItem(parentNode).removeTwoMark(i - 1, i);
+
+      // 下标为i的item为插入的对象
+      for (j = i - 1; j >= 0 && getItemValue(arr, j) > getItemValue(arr, i) ; j -= 1) {
+        // arr[j + 1] = arr[j];
+        statsDisplay(parentNode).comparisonAdd();
+
+        markComparisonItem(parentNode).markTwoItem(j, i);
+
+        movingArray.push(arr[j]);
+        await delay(500);
+
+        markComparisonItem(parentNode).removeTwoMark(j, i)
+      }
+
+      await delay(500);
+
+      // arr[j + 1] = insertItem;
+      markComparisonItem(parentNode).markOneItem(i);
+      // 这里的j， i-1，分别为上面循环中moving array的起始与结束item的下标
+      markComparisonItem(parentNode).markMultipleItems(j + 1, i - 1);
+
+      // 由于j的循环是从大到小进行的，因此需要将moving array进行一次翻转，才符合实际的顺序情况
+      indexAfterInsert = await insert(i, movingArray.reverse(), parentNode);
+      statsDisplay(parentNode).swapAdd();
+
+      await delay(500);
+
+      arr = Array.from(parentNode.children);
+
+      markComparisonItem(parentNode).removeOneMark(indexAfterInsert);
+
+      // 要视移动的方向来决定，其他item的下标
+      if (i > indexAfterInsert) {
+        markComparisonItem(parentNode).removeMultipleMark(j + 1, i);
+      } else {
+        markComparisonItem(parentNode).removeMultipleMark(j - 1, i - 2);
+      }
+    }
+  }
+
+  // 恢复reset button
+  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+  enableResetButton($showcaseWrapper);
+}
+
 async function quickSort(parentNode, low = 0, high = parentNode.children.length - 1) {
   if (low < high) {
     let pivot = await partition(parentNode, low, high);
@@ -190,6 +248,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
 
     let pivotIndex = low;
     let pivotValue = parseInt(list[low].dataset.value);
+
+    // 标识之前比较的区域，标识pivot
+    markComparisonItem(parentNode).markMultipleItems(initLow, initHigh);
 
     while (low < high) {
       while (high > low && parseInt(list[high].dataset.value) >= pivotValue) {
@@ -242,15 +303,12 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
       }
     }
 
-    // 标识之前比较的区域，标识pivot
-    // 但貌似出现了一些问题，一开始pivot就被标记，而结束时才标记整个区域？
-    markComparisonItem(parentNode).markMultipleItems(initLow, initHigh);
-    markComparisonItem(parentNode).markOneItem(low);
+    markComparisonItem(parentNode).markPivotItem(low);
 
     await delay(1500);
 
     markComparisonItem(parentNode).removeMultipleMark(initLow, initHigh);
-    markComparisonItem(parentNode).removeOneMark(low);
+    markComparisonItem(parentNode).removePivotMark(low);
 
     await delay(500);
 
@@ -331,6 +389,79 @@ function swap(firstIndex, lastIndex, parentNode) {
   }
 }
 
+function insert(index, movingArray, parentNode) {
+  return new Promise(function (resolve) {
+    let arr = Array.from(parentNode.children);
+
+    const $insertItem = arr[index];
+    const $firstItem = movingArray[0];
+    const $lastItem = movingArray[movingArray.length - 1];
+
+    const insertLeft = $insertItem.offsetLeft;
+    const firstLeft = $firstItem.offsetLeft;
+    const lastLeft = $lastItem.offsetLeft;
+
+    const diff_X1 = Math.abs(insertLeft - firstLeft);
+    const diff_X2 = Math.abs(insertLeft - lastLeft);
+
+    let animationKeyframesOfInsertItem;
+    let animationKeyframesOfMovingArray;
+
+    if (insertLeft < firstLeft) {
+      // insert item在moving array的左边
+      animationKeyframesOfInsertItem = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${diff_X2}px)` }
+      ];
+
+      animationKeyframesOfMovingArray = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${-diff_X1}px)` }
+      ];
+    } else {
+      // insert item在moving array的右边
+      animationKeyframesOfInsertItem = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${-diff_X1}px)` }
+      ];
+
+      animationKeyframesOfMovingArray = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${diff_X2}px)` }
+      ];
+    }
+
+    const animationOption = {
+      duration: 1000,
+    };
+
+    movingArray.forEach(($item) => {
+      $item.animate(
+        animationKeyframesOfMovingArray,
+        animationOption
+      );
+    });
+
+    const animation1 = $insertItem.animate(
+      animationKeyframesOfInsertItem,
+      animationOption
+    );
+
+    animation1.onfinish = function () {
+      if (insertLeft < firstLeft) {
+        parentNode.insertBefore($insertItem, arr[arr.indexOf($lastItem) + 1]);
+      } else {
+        parentNode.insertBefore($insertItem, $firstItem);
+      }
+
+      // 返回插入后的index
+      arr = Array.from(parentNode.children);
+
+      resolve(arr.indexOf($insertItem));
+    };
+  });
+}
+
 function reset(parentNode) {
   const arr = Array.from(parentNode.children);
   arr.forEach(child => {
@@ -372,14 +503,24 @@ function markComparisonItem(parentNode) {
 
   function markOneItem(index) {
     const $item = arr[index];
-    $item.classList.add('main-item');
+    $item.classList.add('last-item');
   }
 
   function removeOneMark(index) {
     const $item = arr[index];
-    $item.classList.remove('main-item');
+    $item.classList.remove('last-item');
   }
-  
+
+  function markPivotItem(index) {
+    const $item = arr[index];
+    $item.classList.add('pivot-item');
+  }
+
+  function removePivotMark(index) {
+    const $item = arr[index];
+    $item.classList.remove('pivot-item');
+  }
+
   function markTwoItem(index1, index2) {
     const $firstEl = arr[index1];
     const $secondEl = arr[index2];
@@ -414,12 +555,25 @@ function markComparisonItem(parentNode) {
   
   return {
     markOneItem,
-    removeOneMark,
+    markPivotItem,
     markTwoItem,
-    removeTwoMark,
     markMultipleItems,
+    removeOneMark,
+    removePivotMark,
+    removeTwoMark,
     removeMultipleMark
   }
+}
+
+/**
+ * getItemValue  用于$el.dataset.value转化为数值
+ *
+ * @param arr
+ * @param index
+ * @return {number}
+ */
+function getItemValue(arr, index) {
+  return parseInt(arr[index].dataset.value);
 }
 
 function startSorting($sortingWrapper) {
@@ -428,6 +582,9 @@ function startSorting($sortingWrapper) {
   }
   if ($sortingWrapper.matches('.select-sort')) {
     selectSort($sortingWrapper);
+  }
+  if ($sortingWrapper.matches('.insert-sort')) {
+    insertSort($sortingWrapper);
   }
   if ($sortingWrapper.matches('.quick-sort')) {
     quickSort($sortingWrapper);
@@ -482,6 +639,7 @@ function appOnClick(e) {
 function appInit() {
   sortInit($bubbleSortWrapper);
   sortInit($selectSortWrapper);
+  sortInit($insertSortWrapper);
   sortInit($quickSortWrapper);
 
   $container.addEventListener('click', appOnClick, false);
