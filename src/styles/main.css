@@ -46,22 +46,21 @@
 }
 
 .other-item {
-  /*background-color: #ffe770;*/
   background-color: bisque;
   transition: background-color 300ms;
 }
 
-.first-item {
+.green-item {
   background-color: #98FB98;
   transition: background-color 300ms;
 }
 
-.last-item {
+.blue-item {
   background-color: deepskyblue;
   transition: background-color 300ms;
 }
 
-.pivot-item {
+.purple-item {
   background-color: #E0B0FF;
   transition: background-color 300ms;
 }

@@ -103,6 +103,7 @@ async function bubbleSort(parentNode) {
   for (let i = 0, n = arr.length; i < n; i += 1) {
     // 标记当前循环要编译的item范围
     markComparisonItem(parentNode).markMultipleItems(i, n - 1);
+    await delay(800);
 
     for (let j = n - 1; j > i; j -= 1) {
       // 标记正在进行比较的item
@@ -145,6 +146,7 @@ async function selectSort(parentNode) {
 
     // 标记当前循环要编译的item范围
     markComparisonItem(parentNode).markMultipleItems(i, n - 1);
+    await delay(800);
 
     for (let j = i + 1; j <= n - 1; j += 1) {
       statsDisplay(parentNode).comparisonAdd();
@@ -188,7 +190,6 @@ async function insertSort(parentNode) {
 
   for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
     if (getItemValue(arr, i - 1) > getItemValue(arr, i)) {
-      // let insertItem = arr[i];
       let movingArray = [];
       let j, indexAfterInsert;
 
@@ -207,13 +208,15 @@ async function insertSort(parentNode) {
         movingArray.push(arr[j]);
         await delay(500);
 
-        markComparisonItem(parentNode).removeTwoMark(i, j)
+        markComparisonItem(parentNode).removeTwoMark(i, j);
+
+        markComparisonItem(parentNode).markAreaItem(j);
       }
 
-      // arr[j + 1] = insertItem;
       markComparisonItem(parentNode).markPurple(i);
-      // 这里的j， i-1，分别为上面循环中moving array的起始与结束item的下标
-      markComparisonItem(parentNode).markMultipleItems(j + 1, i - 1);
+
+      // 标记上一个中因跳出循环，没有标记到的item
+      markComparisonItem(parentNode).markAreaItem(j + 1);
 
       // 标记准备'交换'的两个部分，让人们知道是这两个元素准备发生'交换'，实际发生的是节点插入
       await delay(500);
@@ -267,6 +270,7 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
 
     // 标识之前比较的区域，标识pivot
     markComparisonItem(parentNode).markMultipleItems(initLow, initHigh);
+    await delay(800);
 
     while (low < high) {
       while (high > low && getItemValue(arr, high) >= pivotValue) {
@@ -517,48 +521,58 @@ function markComparisonItem(parentNode) {
 
   function markGreen(index) {
     const $item = arr[index];
-    $item.classList.add('first-item');
+    $item.classList.add('green-item');
   }
 
   function removeGreenMark(index) {
     const $item = arr[index];
-    $item.classList.remove('first-item');
+    $item.classList.remove('green-item');
   }
 
   function markBlue(index) {
     const $item = arr[index];
-    $item.classList.add('last-item');
+    $item.classList.add('blue-item');
   }
 
   function removeBlueMark(index) {
     const $item = arr[index];
-    $item.classList.remove('last-item');
+    $item.classList.remove('blue-item');
   }
 
   function markPurple(index) {
     const $item = arr[index];
-    $item.classList.add('pivot-item');
+    $item.classList.add('purple-item');
   }
 
   function removePurpleMark(index) {
     const $item = arr[index];
-    $item.classList.remove('pivot-item');
+    $item.classList.remove('purple-item');
+  }
+
+  function markAreaItem(index) {
+    const $item = arr[index];
+    $item.classList.add('other-item');
+  }
+
+  function removeAreaItemMark(index) {
+    const $item = arr[index];
+    $item.classList.remove('other-item');
   }
 
   function markTwoItem(index1, index2) {
     const $firstEl = arr[index1];
     const $secondEl = arr[index2];
 
-    $firstEl.classList.add('first-item');
-    $secondEl.classList.add('last-item');
+    $firstEl.classList.add('green-item');
+    $secondEl.classList.add('blue-item');
   }
   
   function removeTwoMark(index1, index2) {
     const $firstEl = arr[index1];
     const $secondEl = arr[index2];
 
-    $firstEl.classList.remove('first-item');
-    $secondEl.classList.remove('last-item');
+    $firstEl.classList.remove('green-item');
+    $secondEl.classList.remove('blue-item');
   }
   
   function markMultipleItems(startIndex, endIndex) {
@@ -581,11 +595,13 @@ function markComparisonItem(parentNode) {
     markGreen,
     markBlue,
     markPurple,
+    markAreaItem,
     markTwoItem,
     markMultipleItems,
     removeGreenMark,
     removeBlueMark,
     removePurpleMark,
+    removeAreaItemMark,
     removeTwoMark,
     removeMultipleMark
   }
