@@ -189,13 +189,16 @@ async function insertSort(parentNode) {
   let arr = Array.from(parentNode.children);
 
   for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
+    markComparisonItem(parentNode).markTwoItem(i - 1, i);
+    await delay(800);
+    markComparisonItem(parentNode).removeTwoMark(i - 1, i);
+
+    statsDisplay(parentNode).comparisonAdd();
+    await delay(500);
+
     if (getItemValue(arr, i - 1) > getItemValue(arr, i)) {
       let movingArray = [];
       let j, indexAfterInsert;
-
-      markComparisonItem(parentNode).markTwoItem(i - 1, i);
-      await delay(500);
-      markComparisonItem(parentNode).removeTwoMark(i - 1, i);
 
       // 下标为i的item为插入的对象
       for (j = i - 1; j >= 0 && getItemValue(arr, j) > getItemValue(arr, i) ; j -= 1) {
@@ -203,20 +206,19 @@ async function insertSort(parentNode) {
         statsDisplay(parentNode).comparisonAdd();
 
         // 这里将标记的下标进行了交换，主要是让变化的下标使用蓝色
-        markComparisonItem(parentNode).markTwoItem(i, j);
-
-        movingArray.push(arr[j]);
+        markComparisonItem(parentNode).markTwoItem(j, i);
         await delay(500);
+        markComparisonItem(parentNode).removeTwoMark(j, i);
 
-        markComparisonItem(parentNode).removeTwoMark(i, j);
+        // 使用movingArray将之后要移动的item保存起来
+        movingArray.push(arr[j]);
 
+        // 标记即将因节点插入而改变位置的item
         markComparisonItem(parentNode).markAreaItem(j);
       }
 
+      // 标记即将要插入的item
       markComparisonItem(parentNode).markPurple(i);
-
-      // 标记上一个中因跳出循环，没有标记到的item
-      markComparisonItem(parentNode).markAreaItem(j + 1);
 
       // 标记准备'交换'的两个部分，让人们知道是这两个元素准备发生'交换'，实际发生的是节点插入
       await delay(500);
