@@ -86,6 +86,110 @@ const arr = [4, 6, 2, 9, 1, 7, 10, 3, 5, 8];
 //   }
 // }
 
+// merge sort
+
+// bug
+// function mergeSort(arr, n = arr.length) {
+//   let seg, start;
+//   let a = arr;
+//   let b = [];
+//
+//   for (seg = 1; seg < n; seg += seg) {
+//     for (start = 0; start < n; start += seg + seg) {
+//       let low = start;
+//       let mid = Math.min(start + seg, n);
+//       let high = Math.min(start + seg + seg, n);
+//
+//       let k = low;
+//       let start1 = low, end1 = mid;
+//       let start2 = mid, end2 = high;
+//       let temp;
+//
+//       while (start1 < end1 && start2 < end2) {
+//         b[k++] = a[start1] < a[start2]? a[start1++]: a[start2++];
+//       }
+//
+//       while (start1 < end1) {
+//         b[k++] = a[start1++];
+//       }
+//
+//       while (start2 < end2) {
+//         b[k++] = a[start2++];
+//       }
+//
+//       // swap the value
+//       // [a, b] = [b, a];
+//       temp = a;
+//       a = b;
+//       b = temp;
+//     }
+//
+//     if (a !== arr) {
+//       for (let i = 0; i < n; i++) {
+//         b[i] = a[i];
+//       }
+//       b = a;
+//     }
+//   }
+// }
+
+// bug
+// function mergeSort(arr, n = arr.length - 1) {
+//   merge(arr, undefined, 0, n);
+//
+//   function merge(arr = [], reg = [], start, end) {
+//     if (start >= end) {
+//       return;
+//     }
+//
+//     let len = end - start;
+//     let mid = (len / 2) + start;
+//     let start1 = start, end1 = end;
+//     let start2 = mid + 1, end2 = end;
+//
+//     merge(arr, reg, start1, end1);
+//     merge(arr, reg, start2, end2);
+//
+//     let k = start;
+//
+//     while (start1 < end1 && start2 < end2) {
+//       reg[k++] = arr[start1] < arr[start2]? arr[start1++]: arr[start2++];
+//     }
+//
+//     while (start1 < end1) {
+//       reg[k++] = arr[start1++];
+//     }
+//
+//     while (start2 < end2) {
+//       reg[k++] = arr[start2++];
+//     }
+//
+//     for (k = start; k <= end; k++) {
+//       arr[k] = reg[k];
+//     }
+//   }
+// }
+
+// function mergeSort(arr) {
+//   const len = arr.length;
+//   if (len < 2) return arr;
+//   const mid = parseInt(len / 2);
+//   const left = arr.slice(0, mid);
+//   const right = arr.slice(mid);
+//
+//   return merge(mergeSort(left), mergeSort(right));
+//
+//   function merge(left, right) {
+//     let final = [];
+//     while (left.length && right.length) {
+//       let item = left[0] <= right[0]? left.shift(): right.shift();
+//       final.push(item);
+//     }
+//
+//     return final.concat(left.concat(right));
+//   }
+// }
+
 // console.log(arr);
 
 function sortInit(parentNode) {
