@@ -2,13 +2,13 @@ import '../styles/main.css';
 
 import './utility/polyfills.js';
 
-import { $container, $bubbleSortWrapper, $selectSortWrapper, $insertSortWrapper, $quickSortWrapper } from "./DOM/DOM-elements.js";
+import { $container, $bubbleSortWrapper, $selectSortWrapper, $insertSortWrapper, $mergeSortWrapper, $quickSortWrapper } from "./DOM/DOM-elements.js";
 import { createNewElementNode } from "./utility/general-functions.js";
 import DOM_OperationModule from './DOM/DOM-operations.js';
 
 // const arr = [3, 1, 5, 2, 4];
 // const arr = [5, 4, 3, 2, 1];
-const arr = [4, 6, 2, 9, 1, 7, 10, 3, 5, 8];
+const arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
 
 // bubble sort
 
@@ -180,13 +180,13 @@ const arr = [4, 6, 2, 9, 1, 7, 10, 3, 5, 8];
 //   return merge(mergeSort(left), mergeSort(right));
 //
 //   function merge(left, right) {
-//     let final = [];
+//     let result = [];
 //     while (left.length && right.length) {
-//       let item = left[0] <= right[0]? left.shift(): right.shift();
-//       final.push(item);
+//       let min = left[0] <= right[0]? left.shift(): right.shift();
+//       result.push(min);
 //     }
 //
-//     return final.concat(left.concat(right));
+//     return result.concat(left, right);
 //   }
 // }
 
@@ -201,7 +201,6 @@ function sortInit(parentNode) {
   });
 }
 
-// bubble sort
 async function bubbleSort(parentNode) {
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
@@ -233,6 +232,8 @@ async function bubbleSort(parentNode) {
         markComparisonItem(parentNode).removeTwoMark(j - 1, j);
       }
     }
+
+    await delay(500);
 
     markComparisonItem(parentNode).removeMultipleMark(i, n - 1);
     await delay(500);
@@ -281,6 +282,7 @@ async function selectSort(parentNode) {
       markComparisonItem(parentNode).removeTwoMark(minIndex, i);
     }
 
+    await delay(500);
     markComparisonItem(parentNode).removeMultipleMark(i, n - 1);
     await delay(500);
   }
@@ -294,10 +296,11 @@ async function insertSort(parentNode) {
 
   for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
     markComparisonItem(parentNode).markTwoItem(i - 1, i);
+    statsDisplay(parentNode).comparisonAdd();
+
     await delay(800);
     markComparisonItem(parentNode).removeTwoMark(i - 1, i);
 
-    statsDisplay(parentNode).comparisonAdd();
     await delay(500);
 
     if (getItemValue(arr, i - 1) > getItemValue(arr, i)) {
@@ -327,9 +330,11 @@ async function insertSort(parentNode) {
       // 标记准备'交换'的两个部分，让人们知道是这两个元素准备发生'交换'，实际发生的是节点插入
       await delay(500);
 
+      // 先累加，再交换
+      statsDisplay(parentNode).swapAdd();
+
       // 由于j的循环是从大到小进行的，因此需要将moving array进行一次翻转，才符合实际的顺序情况
       indexAfterInsert = await insert(i, movingArray.reverse(), parentNode);
-      statsDisplay(parentNode).swapAdd();
 
       await delay(500);
 
@@ -351,6 +356,103 @@ async function insertSort(parentNode) {
   // 恢复reset button
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
   enableResetButton($showcaseWrapper);
+}
+
+async function mergeSort(parentNode, smallArray = []) {
+  let arr;
+
+  if (smallArray.length === 0) {
+    arr = Array.from(parentNode.children);
+  } else {
+    arr = smallArray;
+  }
+
+  const len = arr.length;
+
+  if (len < 2) {
+    return arr;
+  }
+
+  const mid = len / 2;
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  // 确保获得merge sort的resolve的结果，而不是一个pending的Promise
+  const leftArray = await mergeSort(parentNode, left);
+  const rightArray = await mergeSort(parentNode, right);
+
+  return merge(parentNode, leftArray, rightArray);
+
+  async function merge(parentNode, leftArray, rightArray) {
+    let result;
+    let mergeArray = [];
+    let arr = Array.from(parentNode.children);
+    let initArray = [].concat(leftArray, rightArray);
+    let areaFirstIndex = arr.indexOf(initArray[0]);
+    let areaLastIndex = arr.indexOf(initArray[initArray.length - 1]);
+
+    // 标记merge的区域
+    markComparisonItem(parentNode).markMultipleItems(areaFirstIndex, areaLastIndex);
+
+    await delay(800);
+
+    while (leftArray.length && rightArray.length) {
+      let leftFirstIndex = arr.indexOf(leftArray[0]);
+      // let leftLastIndex = arr.indexOf(leftArray[leftArray.length - 1]);
+      let rightFirstIndex = arr.indexOf(rightArray[0]);
+
+      let min, indexAfterInsert;
+
+      markComparisonItem(parentNode).markTwoItem(leftFirstIndex, rightFirstIndex);
+      statsDisplay(parentNode).comparisonAdd();
+
+      await delay(800);
+      markComparisonItem(parentNode).removeTwoMark(leftFirstIndex, rightFirstIndex);
+
+      // 如果右侧的比较小，则插入到left[0]所在的位置
+      if (getItemValue(leftArray, 0) <= getItemValue(rightArray, 0)) {
+        // 如果左边的比较小，不需要移动，只需将item移除left array即可
+        min = leftArray.shift();
+
+      } else {
+        min = rightArray.shift();
+
+        markComparisonItem(parentNode).markPurple(rightFirstIndex);
+        await delay(500);
+
+        statsDisplay(parentNode).swapAdd();
+        // 将item插入到合适的位置
+        indexAfterInsert = await insert(rightFirstIndex, leftArray, parentNode);
+
+        await delay(500);
+
+        markComparisonItem(parentNode).removePurpleMark(indexAfterInsert);
+      }
+
+      // 保存每次循环中的最小的item
+      mergeArray.push(min);
+
+      arr = Array.from(parentNode.children);
+    }
+
+    // 移除merge区域的标记
+    markComparisonItem(parentNode).removeMultipleMark(areaFirstIndex, areaLastIndex);
+
+    await delay(500);
+
+    // 为什么要用concat？
+    // 这是因为假如有一个数组已经为空，循环就将结束，另一个数组可能还有item，
+    // 需要将没有push到merge array的item也添加进来，最后将result作为merge()的结果返回
+    result = await mergeArray.concat(leftArray, rightArray);
+
+    if (result.length === 10) {
+      // 排序完毕，恢复reset button
+      const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
+      enableResetButton($showcaseWrapper);
+    }
+
+    return result;
+  }
 }
 
 async function quickSort(parentNode, low = 0, high = parentNode.children.length - 1) {
@@ -734,6 +836,9 @@ function startSorting($sortingWrapper) {
   if ($sortingWrapper.matches('.insert-sort')) {
     insertSort($sortingWrapper);
   }
+  if ($sortingWrapper.matches('.merge-sort')) {
+    mergeSort($sortingWrapper);
+  }
   if ($sortingWrapper.matches('.quick-sort')) {
     quickSort($sortingWrapper);
   }
@@ -788,6 +893,7 @@ function appInit() {
   sortInit($bubbleSortWrapper);
   sortInit($selectSortWrapper);
   sortInit($insertSortWrapper);
+  sortInit($mergeSortWrapper);
   sortInit($quickSortWrapper);
 
   $container.addEventListener('click', appOnClick, false);
