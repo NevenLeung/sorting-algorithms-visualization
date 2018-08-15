@@ -5,4 +5,4 @@ Using Vanilla JS to visualise sorting algorithms process.
 
 ## Resource
 
-[sorting-code-used-in-the-project](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)
+[sorting code used in the project](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)
