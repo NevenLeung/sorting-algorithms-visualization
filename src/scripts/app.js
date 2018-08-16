@@ -8,6 +8,13 @@ import DOM_OperationModule from './DOM/DOM-operations.js';
 
 const arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
 
+/**
+ * sortInit(parentNode)
+ *
+ * 根据数组元素的数组的相对大小，创建相应高度的柱子，依次添加到parentNode，作为它的子节点。用于应用初始化与点击排序结果重置按钮。
+ *
+ * @param parentNode  一个符合.sorting-wrapper的元素
+ */
 function sortInit(parentNode) {
   arr.forEach(n => {
     const childNode = createNewElementNode('div', 'item', n, 'data-value', n);
@@ -17,6 +24,13 @@ function sortInit(parentNode) {
   });
 }
 
+/**
+ * bubbleSort(parentNode)
+ *
+ * 冒泡排序的执行函数，内部异步执行相应的DOM节点排序动画
+ *
+ * @param parentNode  一个符合.sorting-wrapper .bubble-sort的元素
+ */
 async function bubbleSort(parentNode) {
   let arr = Array.from(parentNode.children);
   for (let i = 0, n = arr.length; i < n; i += 1) {
@@ -61,6 +75,14 @@ async function bubbleSort(parentNode) {
   enableResetButton($showcaseWrapper);
 }
 
+/**
+ * selectSort(parentNode)
+ *
+ * 选择排序的执行函数，内部异步执行相应的DOM节点排序动画
+ *
+ * @param parentNode  一个符合.sorting-wrapper .select-sort的元素
+ *
+ */
 async function selectSort(parentNode) {
   let arr = Array.from(parentNode.children);
   for (let i = 0, minIndex, n = arr.length; i < n - 1; i += 1) {
@@ -111,6 +133,13 @@ async function selectSort(parentNode) {
   enableResetButton($showcaseWrapper);
 }
 
+/**
+ * insertSort(parentNode)
+ *
+ * 插入排序的执行函数，内部异步执行相应的DOM节点排序动画
+ *
+ * @param parentNode  一个符合.sorting-wrapper .insert-sort的元素
+ */
 async function insertSort(parentNode) {
   let arr = Array.from(parentNode.children);
 
@@ -158,6 +187,7 @@ async function insertSort(parentNode) {
 
       await delay(500);
 
+      // 更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
       arr = Array.from(parentNode.children);
 
       markComparisonItem(parentNode).removePurpleMark(indexAfterInsert);
@@ -178,6 +208,18 @@ async function insertSort(parentNode) {
   enableResetButton($showcaseWrapper);
 }
 
+/**
+ * mergeSort(parentNode, smallArray = [])
+ *
+ * 归并排序的执行函数，内部异步执行相应的DOM节点排序动画。
+ *
+ * 该函数使用了递归。在传入merge()的参数中，递归调用了mergeSort()本身，而每一次mergerSort()的结果则是由两个return语句之一来决定。
+ *
+ * @param parentNode  一个符合.sorting-wrapper .merge-sort的元素，用于更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
+ * @param {Array} smallArray  用于保存需要被不断拆分的数组，起始默认值为空数组。
+ *
+ * @return {Promise<*>}  有序的，从小到大排好序的DOM数组
+ */
 async function mergeSort(parentNode, smallArray = []) {
   let arr;
 
@@ -275,6 +317,17 @@ async function mergeSort(parentNode, smallArray = []) {
   }
 }
 
+/**
+ * quickSort(parentNode, low = 0, high = parentNode.children.length - 1)
+ *
+ * 快速排序的执行函数，内部异步执行相应的DOM节点排序动画
+ *
+ * 该函数使用了递归，进行排序的是partition()，quickSort()通过partition()找到pivot，不断地将数组越拆越小，直到每一部分数组都是有序的
+ *
+ * @param parentNode  一个符合.sorting-wrapper .quick-sort的元素
+ * @param low  数组的起始下标，初始默认值为0
+ * @param high  数组的结束下标，初始默认值为数组的最后一个
+ */
 async function quickSort(parentNode, low = 0, high = parentNode.children.length - 1) {
   if (low < high) {
     let pivot = await partition(parentNode, low, high);
@@ -282,11 +335,12 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
     await quickSort(parentNode, low, pivot - 1);
     await quickSort(parentNode, pivot + 1, high);
   } else {
-    // 递归接近完成
+    // 递归接近完成，quickSort的递归到头
     const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
     enableResetButton($showcaseWrapper);
   }
 
+    // 选择一个数值作为 pivot（枢轴），经过一些步骤，使得位于 pivot 左侧的所有数值都小于 pivot，而位于 pivot 右侧的所有数值都大于 pivot
   async function partition(parentNode, low, high) {
     let arr = Array.from(parentNode.children);
 
@@ -365,10 +419,34 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
   }
 }
 
+/**
+ * delay(timeout)
+ *
+ * 在异步代码中使后续代码延迟执行的函数
+ * 用作在排序过程中使代码暂停执行
+ *
+ * @param timeout  暂停时长，单位ms
+ * @return {Promise<any>}  一个延迟resolve的Promise
+ */
 function delay(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
+/**
+ * swap(firstIndex, lastIndex, parentNode, animationDuration = 1000)
+ *
+ * DOM节点的交换动画函数
+ *
+ * 两个index的前后关系没有要求，函数内部有相应的逻辑判断，但为了代码更易读，最好好事遵循前后顺序
+ *
+ * @param firstIndex  发生交换的节点在当前数组中的下标值
+ * @param lastIndex  发生交换的节点在当前数组中的下标值
+ * @param parentNode  一个符合.sorting-wrapper的元素，交换操作以此元素为父节点
+ * @param animationDuration  交换动画持续时间，默认值为1000ms。
+ *                           相近节点的交换，动画会显得比较慢，而距离较远的节点的交换动画会执行得很快，需要把握好这个平衡点。
+ *
+ * @return {Promise<any>}  无意义的resolve结果，主要是为了告知交换动画执行完毕
+ */
 function swap(firstIndex, lastIndex, parentNode, animationDuration = 1000) {
   return new Promise(function (resolve) {
     const arr = Array.from(parentNode.children);
@@ -441,6 +519,21 @@ function swap(firstIndex, lastIndex, parentNode, animationDuration = 1000) {
   });
 }
 
+/**
+ * insert(index, movingArray, parentNode, animationDuration = 1000)
+ *
+ * DOM节点的插入动画函数
+ *
+ * 在插入操作发生时，插入节点与其他被动移动节点的移动距离是不一样的，同时也要考虑移动方向的因素，函数内部都做了相应的判断
+ *
+ * @param index  待插入节点在当前数组中的下标值，该节点的移动距离则是整个moving array所有元素的的宽度之和
+ * @param movingArray  将其他需要被动移动的节点添加到moving array中，moving array的移动距离只有一个节点的宽度
+ * @param parentNode  一个符合.sorting-wrapper的元素，插入操作以此元素为父节点
+ * @param animationDuration  交换动画持续时间，默认值为1000ms。
+ *                           相近节点的交换，动画会显得比较慢，而距离较远的节点的交换动画会执行得很快，需要把握好这个平衡点。
+ *
+ * @return {Promise<any>}  返回插入节点插入到相应位置后的下标值
+ */
 function insert(index, movingArray, parentNode, animationDuration = 1000) {
   return new Promise(function (resolve) {
     let arr = Array.from(parentNode.children);
@@ -514,7 +607,14 @@ function insert(index, movingArray, parentNode, animationDuration = 1000) {
   });
 }
 
-function reset(parentNode) {
+/**
+ * reset(parentNode)
+ *
+ * 清空.sort-wrapper的所有子元素
+ *
+ * @param parentNode
+ */
+function clear(parentNode) {
   const arr = Array.from(parentNode.children);
   arr.forEach(child => {
     parentNode.removeChild(child);
@@ -688,7 +788,7 @@ function resetHandler($el) {
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
   const $startButton = DOM_OperationModule.query($showcaseWrapper, '.start-button');
 
-  reset($sortingWrapper);
+  clear($sortingWrapper);
   sortInit($sortingWrapper);
 
   // 重置后可点击start按钮

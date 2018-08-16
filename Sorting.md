@@ -141,9 +141,9 @@ function quickSort(low, high, list) {
   let pivot;
 
   if (low < high) {
-    // 进行排序的是partition()
+    // 进行排序的是partition()，quickSort()通过partition()找到pivot，不断地将数组越拆越小，直到每一部分数组都是有序的
     pivot = partition(low, high, list);
-    // quickSort()做的是通过partition()不断地将数组分成的两部分变成局部有序
+ 
     quickSort(low, pivot - 1, list);
     quickSort(pivot + 1, high, list);
   }
