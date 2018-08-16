@@ -25,21 +25,22 @@ async function bubbleSort(parentNode) {
     await delay(800);
 
     for (let j = n - 1; j > i; j -= 1) {
+      statsDisplay(parentNode).comparisonAdd();
       // 标记正在进行比较的item
       markComparisonItem(parentNode).markTwoItem(j - 1, j);
-
       await delay(500);
-      statsDisplay(parentNode).comparisonAdd();
 
       if (getItemValue(arr, j - 1) > getItemValue(arr, j)) {
-        // 进行交换，节点位置的交换
-        swap(j - 1, j, parentNode);
-        await delay(1200);
-
-        // 使得arr为交换后的结果
-        arr = Array.from(parentNode.children);
-
         statsDisplay(parentNode).swapAdd();
+        // 进行交换，节点位置的交换
+        await swap(j - 1, j, parentNode);
+
+        // swap之后的500ms的暂停
+        // 一是为了在交换动画完成后，停一下再取消标记颜色
+        // 二是为了让arr尽可能地获取到节点位置交换后的DOM数组
+        await delay(500);
+        // 更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
+        arr = Array.from(parentNode.children);
 
         // 发生了交换，则按交换后的顺序取消对应的样式
         markComparisonItem(parentNode).removeTwoMark(j, j - 1);
@@ -86,14 +87,17 @@ async function selectSort(parentNode) {
       // 标记准备交换的两个item，让人们知道是这两个元素准备发生交换
       await delay(500);
 
+      statsDisplay(parentNode).swapAdd();
       // 进行交换，节点位置的交换
-      swap(i , minIndex, parentNode);
-      await delay(1200);
+      await swap(i , minIndex, parentNode);
 
-      // 使得arr为交换后的结果
+      // swap之后的500ms的暂停
+      // 一是为了在交换动画完成后，停一下再取消标记颜色
+      // 二是为了让arr尽可能地获取到节点位置交换后的DOM数组
+      await delay(500);
+      // 更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
       arr = Array.from(parentNode.children);
 
-      statsDisplay(parentNode).swapAdd();
       // 发生了交换，则按交换后的顺序取消对应的样式
       markComparisonItem(parentNode).removeTwoMark(minIndex, i);
     }
@@ -313,9 +317,12 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         statsDisplay(parentNode).swapAdd();
         markComparisonItem(parentNode).markTwoItem(low, high);
 
-        swap(low, high, parentNode);
-        await delay(1200);
+        await swap(low, high, parentNode);
 
+        // swap之后的500ms的暂停
+        // 一是为了在交换动画完成后，停一下再取消标记颜色
+        // 二是为了让arr尽可能地获取到节点位置交换后的DOM数组
+        await delay(500);
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
         arr = Array.from(parentNode.children);
@@ -336,9 +343,9 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         statsDisplay(parentNode).swapAdd();
         markComparisonItem(parentNode).markTwoItem(low, high);
 
-        swap(low, high, parentNode);
-        await delay(1200);
+        await swap(low, high, parentNode);
 
+        await delay(500);
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
         arr = Array.from(parentNode.children);
@@ -362,76 +369,79 @@ function delay(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-function swap(firstIndex, lastIndex, parentNode) {
-  const arr = Array.from(parentNode.children);
+function swap(firstIndex, lastIndex, parentNode, animationDuration = 1000) {
+  return new Promise(function (resolve) {
+    const arr = Array.from(parentNode.children);
 
-  const firstEl = arr[firstIndex];
-  const lastEl = arr[lastIndex];
+    const firstEl = arr[firstIndex];
+    const lastEl = arr[lastIndex];
 
-  // 节点位置
-  const firstLeft = firstEl.offsetLeft;
-  const lastLeft = lastEl.offsetLeft;
+    // 节点位置
+    const firstLeft = firstEl.offsetLeft;
+    const lastLeft = lastEl.offsetLeft;
 
-  const diff_X = Math.abs(firstLeft - lastLeft);
+    const diff_X = Math.abs(firstLeft - lastLeft);
 
-  let animationKeyframesForFirstEl, animationKeyframesForLastEl;
+    let animationKeyframesForFirstEl, animationKeyframesForLastEl;
 
-  // 左右交换动画
+    // 左右交换动画
 
-  // 根据节点的位置相对关系，来设定移动的方向
-  if (firstLeft < lastLeft) {
-    animationKeyframesForFirstEl = [
-      { transform: 'translateX(0px)' },
-      { transform: `translateX(${diff_X}px)` }
-    ];
+    // 根据节点的位置相对关系，来设定移动的方向
+    if (firstLeft < lastLeft) {
+      animationKeyframesForFirstEl = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${diff_X}px)` }
+      ];
 
-    animationKeyframesForLastEl = [
-      { transform: 'translateX(0px)' },
-      { transform: `translateX(${-diff_X}px)` }
-    ];
-  } else {
-    animationKeyframesForFirstEl = [
-      { transform: 'translateX(0px)' },
-      { transform: `translateX(${-diff_X}px)` }
-    ];
-
-    animationKeyframesForLastEl = [
-      { transform: 'translateX(0px)' },
-      { transform: `translateX(${diff_X}px)` }
-    ];
-  }
-
-  const animationOption = {
-    duration: 1000,
-  };
-
-  const animation1 = firstEl.animate(
-    animationKeyframesForFirstEl,
-    animationOption
-  );
-
-  const animation2 = lastEl.animate(
-    animationKeyframesForLastEl,
-    animationOption
-  );
-
-  animation1.onfinish = function () {
-    //  将前面的节点插入到后面
-    if (arr[lastIndex] === parentNode.lastElementChild) {
-      parentNode.appendChild(arr[firstIndex]);
+      animationKeyframesForLastEl = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${-diff_X}px)` }
+      ];
     } else {
-      parentNode.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
+      animationKeyframesForFirstEl = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${-diff_X}px)` }
+      ];
+
+      animationKeyframesForLastEl = [
+        { transform: 'translateX(0px)' },
+        { transform: `translateX(${diff_X}px)` }
+      ];
     }
 
-  };
+    const animationOption = {
+      duration: animationDuration,
+    };
 
-  animation2.onfinish = function () {
-    // 将后面的节点插入到前面
-    parentNode.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
-  }
+    const animation1 = firstEl.animate(
+      animationKeyframesForFirstEl,
+      animationOption
+    );
+
+    const animation2 = lastEl.animate(
+      animationKeyframesForLastEl,
+      animationOption
+    );
+
+    animation1.onfinish = function () {
+      //  将前面的节点插入到后面
+      if (arr[lastIndex] === parentNode.lastElementChild) {
+        parentNode.appendChild(arr[firstIndex]);
+      } else {
+        parentNode.insertBefore(arr[firstIndex], arr[lastIndex + 1]);
+      }
+
+      resolve('Swapping is finished.');
+    };
+
+    animation2.onfinish = function () {
+      // 将后面的节点插入到前面
+      parentNode.insertBefore(arr[lastIndex], arr[firstIndex + 1]);
+    }
+  });
 }
 
-function insert(index, movingArray, parentNode) {
+function insert(index, movingArray, parentNode, animationDuration = 1000) {
   return new Promise(function (resolve) {
     let arr = Array.from(parentNode.children);
 
@@ -474,7 +484,7 @@ function insert(index, movingArray, parentNode) {
     }
 
     const animationOption = {
-      duration: 1000,
+      duration: animationDuration,
     };
 
     movingArray.forEach(($item) => {
