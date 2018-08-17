@@ -1,3 +1,12 @@
+/**
+ * @module  DOM-elements
+ *
+ * 存放常用的元素节点的模块
+ *
+ * @export {$container, $bubbleSortWrapper, $selectSortWrapper, $insertSortWrapper, $mergeSortWrapper, $quickSortWrapper}
+ *
+ */
+
 const $container = document.querySelector('.container');
 const $bubbleSortWrapper = document.querySelector('.bubble-sort');
 const $selectSortWrapper = document.querySelector('.select-sort');

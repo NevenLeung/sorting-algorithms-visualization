@@ -13,7 +13,7 @@ const arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
  *
  * 根据数组元素的数组的相对大小，创建相应高度的柱子，依次添加到parentNode，作为它的子节点。用于应用初始化与点击排序结果重置按钮。
  *
- * @param parentNode  一个符合.sorting-wrapper的元素
+ * @param {Element} parentNode  一个符合.sorting-wrapper的元素
  */
 function sortInit(parentNode) {
   arr.forEach(n => {
@@ -29,7 +29,7 @@ function sortInit(parentNode) {
  *
  * 冒泡排序的执行函数，内部异步执行相应的DOM节点排序动画
  *
- * @param parentNode  一个符合.sorting-wrapper .bubble-sort的元素
+ * @param {Element} parentNode  一个符合.sorting-wrapper .bubble-sort的元素
  */
 async function bubbleSort(parentNode) {
   let arr = Array.from(parentNode.children);
@@ -80,7 +80,7 @@ async function bubbleSort(parentNode) {
  *
  * 选择排序的执行函数，内部异步执行相应的DOM节点排序动画
  *
- * @param parentNode  一个符合.sorting-wrapper .select-sort的元素
+ * @param {Element} parentNode  一个符合.sorting-wrapper .select-sort的元素
  *
  */
 async function selectSort(parentNode) {
@@ -138,7 +138,7 @@ async function selectSort(parentNode) {
  *
  * 插入排序的执行函数，内部异步执行相应的DOM节点排序动画
  *
- * @param parentNode  一个符合.sorting-wrapper .insert-sort的元素
+ * @param {Element} parentNode  一个符合.sorting-wrapper .insert-sort的元素
  */
 async function insertSort(parentNode) {
   let arr = Array.from(parentNode.children);
@@ -212,10 +212,11 @@ async function insertSort(parentNode) {
  * mergeSort(parentNode, smallArray = [])
  *
  * 归并排序的执行函数，内部异步执行相应的DOM节点排序动画。
- *
+ * ------------------------------------------------------------------------------------------------------------------
  * 该函数使用了递归。在传入merge()的参数中，递归调用了mergeSort()本身，而每一次mergerSort()的结果则是由两个return语句之一来决定。
- *
- * @param parentNode  一个符合.sorting-wrapper .merge-sort的元素，用于更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
+ * ------------------------------------------------------------------------------------------------------------------
+ * @param {Element} parentNode  一个符合.sorting-wrapper .merge-sort的元素，
+ *                              后续用于更新arr，使得arr变量与发生节点操作后的实际DOM数组保持一致
  * @param {Array} smallArray  用于保存需要被不断拆分的数组，起始默认值为空数组。
  *
  * @return {Promise<*>}  有序的，从小到大排好序的DOM数组
@@ -321,12 +322,12 @@ async function mergeSort(parentNode, smallArray = []) {
  * quickSort(parentNode, low = 0, high = parentNode.children.length - 1)
  *
  * 快速排序的执行函数，内部异步执行相应的DOM节点排序动画
- *
+ * ---------------------------------------------------------------------------------------------------------------------
  * 该函数使用了递归，进行排序的是partition()，quickSort()通过partition()找到pivot，不断地将数组越拆越小，直到每一部分数组都是有序的
- *
- * @param parentNode  一个符合.sorting-wrapper .quick-sort的元素
- * @param low  数组的起始下标，初始默认值为0
- * @param high  数组的结束下标，初始默认值为数组的最后一个
+ * ---------------------------------------------------------------------------------------------------------------------
+ * @param {Element}  parentNode  一个符合.sorting-wrapper .quick-sort的元素
+ * @param {Number} low  数组的起始下标，初始默认值为0
+ * @param {Number} high  数组的结束下标，初始默认值为数组的最后一个
  */
 async function quickSort(parentNode, low = 0, high = parentNode.children.length - 1) {
   if (low < high) {
@@ -423,10 +424,11 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
  * delay(timeout)
  *
  * 在异步代码中使后续代码延迟执行的函数
+ * -------------------------------
  * 用作在排序过程中使代码暂停执行
- *
- * @param timeout  暂停时长，单位ms
- * @return {Promise<any>}  一个延迟resolve的Promise
+ * -------------------------------
+ * @param {Number} timeout  暂停时长，单位ms
+ * @return {Promise<undefined>}  一个延迟resolve的Promise
  */
 function delay(timeout) {
   return new Promise(resolve => setTimeout(resolve, timeout));
@@ -436,16 +438,16 @@ function delay(timeout) {
  * swap(firstIndex, lastIndex, parentNode, animationDuration = 1000)
  *
  * DOM节点的交换动画函数
- *
- * 两个index的前后关系没有要求，函数内部有相应的逻辑判断，但为了代码更易读，最好好事遵循前后顺序
- *
- * @param firstIndex  发生交换的节点在当前数组中的下标值
- * @param lastIndex  发生交换的节点在当前数组中的下标值
- * @param parentNode  一个符合.sorting-wrapper的元素，交换操作以此元素为父节点
- * @param animationDuration  交换动画持续时间，默认值为1000ms。
+ * -----------------------------------------------------------------------------------
+ * 两个index的前后关系没有要求，函数内部有相应的逻辑判断，但为了代码更易读，最好还是遵循节点前后顺序
+ * -----------------------------------------------------------------------------------
+ * @param {Number} firstIndex  发生交换的节点在当前数组中的下标值
+ * @param {Number} lastIndex  发生交换的节点在当前数组中的下标值
+ * @param {Element}  parentNode  一个符合.sorting-wrapper的元素，交换操作以此元素为父节点
+ * @param {Number} animationDuration  交换动画持续时间，默认值为1000ms。
  *                           相近节点的交换，动画会显得比较慢，而距离较远的节点的交换动画会执行得很快，需要把握好这个平衡点。
  *
- * @return {Promise<any>}  无意义的resolve结果，主要是为了告知交换动画执行完毕
+ * @return {Promise<undefined>}  无意义的resolve结果，主要是为了告知交换动画执行完毕
  */
 function swap(firstIndex, lastIndex, parentNode, animationDuration = 1000) {
   return new Promise(function (resolve) {
@@ -523,9 +525,9 @@ function swap(firstIndex, lastIndex, parentNode, animationDuration = 1000) {
  * insert(index, movingArray, parentNode, animationDuration = 1000)
  *
  * DOM节点的插入动画函数
- *
+ * ---------------------------------------------------------------------------------------------------------
  * 在插入操作发生时，插入节点与其他被动移动节点的移动距离是不一样的，同时也要考虑移动方向的因素，函数内部都做了相应的判断
- *
+ * ---------------------------------------------------------------------------------------------------------
  * @param index  待插入节点在当前数组中的下标值，该节点的移动距离则是整个moving array所有元素的的宽度之和
  * @param movingArray  将其他需要被动移动的节点添加到moving array中，moving array的移动距离只有一个节点的宽度
  * @param parentNode  一个符合.sorting-wrapper的元素，插入操作以此元素为父节点
@@ -612,7 +614,7 @@ function insert(index, movingArray, parentNode, animationDuration = 1000) {
  *
  * 清空.sort-wrapper的所有子元素
  *
- * @param parentNode
+ * @param {Element} parentNode
  */
 function clear(parentNode) {
   const arr = Array.from(parentNode.children);
@@ -621,6 +623,25 @@ function clear(parentNode) {
   });
 }
 
+/**
+ * statsDisplay(parentNode)
+ *
+ * 在排序过程中，负责更新DOM中比较、交换或插入的操作次数的数值
+ * ------------------------------------------------------
+ * 内部有三个函数
+ * reset() - 将统计次数重置为0
+ * comparisonAdd() - 比较操作的统计数值 +1
+ * swapAdd() - 交行（或插入）操作的统计数值 +1
+ *-------------------------------------------------------
+ * @param {Element} parentNode  一个符合.sorting-wrapper的元素
+ *
+ * @return {Object} 返回次数统计相关的方法
+ * {
+    reset,
+    comparisonAdd,
+    swapAdd
+  }
+ */
 function statsDisplay(parentNode) {
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
   const $numberOfComparison = DOM_OperationModule.query($showcaseWrapper, '.num-comparison');
@@ -632,12 +653,14 @@ function statsDisplay(parentNode) {
     $numberOfComparison.textContent = 0;
     $numberOfSwap.textContent = 0;
   }
-  
+
+  // 获取相应排序动画的比较次数的统计数值，在此数值上 +1
   function comparisonAdd() {
     comparisonCounter += 1;
     $numberOfComparison.textContent = comparisonCounter;
   }
-  
+
+  // 获取相应排序动画的交换（或插入）次数的统计数值，在此数值上 +1
   function swapAdd() {
     swapCounter += 1;
     $numberOfSwap.textContent = swapCounter;
@@ -650,6 +673,43 @@ function statsDisplay(parentNode) {
   };
 }
 
+/**
+ * markComparisonItem(parentNode)
+ *
+ * 为排序算法动画中的item的标记颜色
+ * --------------------------------------------------------------------------------------------
+ * - 颜色标记与相应取消颜色标记的函数一对一对的，不同的颜色标记函数的需要传入的参数可能会有所不同
+ * - markGreen(), markBlue(), markPurple(), markAreaItem()都是标记单个item的，其余两个从函数命名中可以看出标记的数量
+ *
+ * 标记颜色说明：
+ * - 绿色：表示当前循环作为基准进行比较的item
+ * - 蓝色：表示当前循环中遍历到的另一个比较的item。
+ *   (通常，绿色的item变动较少，蓝色item的一直都在变化。只要有比较过程出现，就会出现绿色与蓝色的标记)
+ *
+ * - 紫色：
+ *   - 在快速排序中，表示pivot。
+ *   - 在插入类的排序中，表示发生插入操作的item。
+ * - 浅肉色：
+ *   - 表示每一次内部循环中，将要遍历的范围（目的是为了表明当前一次内部循环中，要发生比较与交换（或插入）操作的区域）
+ * --------------------------------------------------------------------------------------------
+ * @param {Element} parentNode  一个符合.sorting-wrapper的元素
+ *
+ * @return {Object} 返回颜色标记相关的方法
+ * {
+    markGreen,
+    markBlue,
+    markPurple,
+    markAreaItem,
+    markTwoItem,
+    markMultipleItems,
+    removeGreenMark,
+    removeBlueMark,
+    removePurpleMark,
+    removeAreaItemMark,
+    removeTwoMark,
+    removeMultipleMark
+  }
+ */
 function markComparisonItem(parentNode) {
   const arr = Array.from(parentNode.children);
 
@@ -742,16 +802,26 @@ function markComparisonItem(parentNode) {
 }
 
 /**
- * getItemValue  用于$el.dataset.value转化为数值
+ * getItemValue
  *
- * @param arr
- * @param index
- * @return {number}
+ * 用于将$el.dataset.value转化为数值
+ *
+ * @param {Array} arr  item所在的数组
+ * @param {Number} index  item的下标索引
+ *
+ * @return {Number}  item节点的data-value数值
  */
 function getItemValue(arr, index) {
   return parseInt(arr[index].dataset.value);
 }
 
+/**
+ * startSorting($sortingWrapper)
+ *
+ * 各种排序动画的启动函数
+ *
+ * @param {Element} $sortingWrapper  相应的.sorting-wrapper的元素
+ */
 function startSorting($sortingWrapper) {
   if ($sortingWrapper.matches('.bubble-sort')) {
     bubbleSort($sortingWrapper);
@@ -770,6 +840,13 @@ function startSorting($sortingWrapper) {
   }
 }
 
+/**
+ * playHandler($el)
+ *
+ * 点击start按钮的处理函数
+ *
+ * @param {Element} $el  .start-button元素节点
+ */
 function playHandler($el) {
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor($el, '.showcase');
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
@@ -783,12 +860,21 @@ function playHandler($el) {
 
 }
 
+/**
+ * resetHandler($el)
+ *
+ * 点击reset按钮的处理函数
+ *
+ * @param {Element} $el  .reset-button元素节点
+ */
 function resetHandler($el) {
   const $showcaseWrapper = DOM_OperationModule.findClosestAncestor($el, '.showcase');
   const $sortingWrapper = DOM_OperationModule.query($showcaseWrapper, '.sorting-wrapper');
   const $startButton = DOM_OperationModule.query($showcaseWrapper, '.start-button');
 
+  // 清空$sortingWrapper中的所有item
   clear($sortingWrapper);
+  // 重新生成并渲染未排序的item
   sortInit($sortingWrapper);
 
   // 重置后可点击start按钮
@@ -799,11 +885,25 @@ function resetHandler($el) {
   statsDisplay($sortingWrapper).reset();
 }
 
+/**
+ * enableResetButton($showcaseWrapper)
+ *
+ * 重新启用reset按钮
+ *
+ * @param {Element} $showcaseWrapper  .showcase元素节点
+ */
 function enableResetButton($showcaseWrapper) {
   const $resetButton = DOM_OperationModule.query($showcaseWrapper, '.reset-button');
   $resetButton.removeAttribute('disabled');
 }
 
+/**
+ * appOnClick(e)
+ *
+ * 通过事件委托处理start与reset按钮的点击
+ *
+ * @param e event object
+ */
 function appOnClick(e) {
   const $el = e.target;
 
@@ -815,6 +915,11 @@ function appOnClick(e) {
   }
 }
 
+/**
+ * appInit()
+ *
+ * 应用的初始化函数
+ */
 function appInit() {
   sortInit($bubbleSortWrapper);
   sortInit($selectSortWrapper);
