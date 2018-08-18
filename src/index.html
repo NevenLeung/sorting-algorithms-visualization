@@ -3,142 +3,321 @@
 <head>
   <meta charset="UTF-8">
   <title>Sorting algorithms visualization</title>
-  <!--<link rel="stylesheet" href="./styles/main.css">-->
 </head>
 <body>
+
   <div class="container">
     <!-- Bubble sort -->
-    <section class="section">
-      <h3>Bubble sort</h3>
-      <div class="showcase">
-        <div class="sorting-display">
-          <div class="sorting-wrapper bubble-sort">
-
-          </div>
-          <br>
-          <div class="sort-ctrl">
-            <button class="button start-button">start sorting</button>
-            <button class="button reset-button">reset</button>
+    <div class="row">
+      <div class="col animation">
+        <div class="animation-wrapper">
+          <h2 align="center">Bubble sort</h2>
+          <div class="showcase">
+            <div class="sorting-display">
+              <div class="sorting-wrapper bubble-sort">
+                <!-- sorting items will display here -->
+              </div>
+              <br>
+              <div class="sort-ctrl" align="center">
+                <button class="button start-button">Start</button>
+                <button class="button reset-button">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sorting-stats">
-          <div class="stats-comparison">
-            comparison: <span class="num-comparison">0</span>
-          </div>
-          <div class="stats-swap">
-            swap: <span class="num-swap">0</span>
+        <div class="sorting-stats-wrapper">
+          <div class="sorting-stats">
+            <div class="stats-comparison">
+              comparison: <span class="num-comparison">0</span>
+            </div>
+            <div class="stats-swap">
+              swap: <span class="num-swap">0</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <div class="col animation-interpretation">
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="sorting-theory">
+              <h4>算法思想</h4>
+              <span class="theory-content">将相邻的两个数值进行比较、交换，逐步让数组变得有序。</span>
+            </div>
+            <div class="color-explanation-wrapper">
+              <h4>标记颜色说明</h4>
+              <div class="color-explanation-item">
+                <span class="color-brick green"></span>
+                <span class="color-explanation-content">当前循环作为基准进行比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick blue"></span>
+                <span class="color-explanation-content">当前循环中遍历到的另一个比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick bisque"></span>
+                <span class="color-explanation-content">每一次内部循环中，将要遍历的范围</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Select sort -->
-    <section class="section">
-      <h3>Select sort</h3>
-      <div class="showcase">
-        <div class="sorting-display">
-          <div class="sorting-wrapper select-sort">
-
-          </div>
-          <br>
-          <div class="sort-ctrl">
-            <button class="button start-button">start sorting</button>
-            <button class="button reset-button">reset</button>
+    <div class="row">
+      <div class="col animation">
+        <div class="animation-wrapper">
+          <h2 align="center">Select sort</h2>
+          <div class="showcase">
+            <div class="sorting-display">
+              <div class="sorting-wrapper select-sort">
+                <!-- sorting items will display here -->
+              </div>
+              <br>
+              <div class="sort-ctrl" align="center">
+                <button class="button start-button">Start</button>
+                <button class="button reset-button">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sorting-stats">
-          <div class="stats-comparison">
-            comparison: <span class="num-comparison">0</span>
-          </div>
-          <div class="stats-swap">
-            swap: <span class="num-swap">0</span>
+        <div class="sorting-stats-wrapper">
+          <div class="sorting-stats">
+            <div class="stats-comparison">
+              comparison: <span class="num-comparison">0</span>
+            </div>
+            <div class="stats-swap">
+              swap: <span class="num-swap">0</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <div class="col animation-interpretation">
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="sorting-theory">
+              <h4>算法思想</h4>
+              <span class="theory-content">找出第 n 次循环可遍历的元素中最小的数值，并把它交换到数组的第 n 个位置。</span>
+            </div>
+            <div class="color-explanation-wrapper">
+              <h4>标记颜色说明</h4>
+              <div class="color-explanation-item">
+                <span class="color-brick green"></span>
+                <span class="color-explanation-content">当前循环作为基准进行比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick blue"></span>
+                <span class="color-explanation-content">当前循环中遍历到的另一个比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick bisque"></span>
+                <span class="color-explanation-content">每一次内部循环中，将要遍历的范围</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Insert sort -->
-    <section class="section">
-      <h3>Insert sort</h3>
-      <div class="showcase">
-        <div class="sorting-display">
-          <div class="sorting-wrapper insert-sort">
-
-          </div>
-          <br>
-          <div class="sort-ctrl">
-            <button class="button start-button">start sorting</button>
-            <button class="button reset-button">reset</button>
+    <div class="row">
+      <div class="col animation">
+        <div class="animation-wrapper">
+          <h2 align="center">Insert sort</h2>
+          <div class="showcase">
+            <div class="sorting-display">
+              <div class="sorting-wrapper insert-sort">
+                <!-- sorting items will display here -->
+              </div>
+              <br>
+              <div class="sort-ctrl" align="center">
+                <button class="button start-button">Start</button>
+                <button class="button reset-button">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sorting-stats">
-          <div class="stats-comparison">
-            comparison: <span class="num-comparison">0</span>
-          </div>
-          <div class="stats-swap">
-            insert: <span class="num-swap">0</span>
+        <div class="sorting-stats-wrapper">
+          <div class="sorting-stats">
+            <div class="stats-comparison">
+              comparison: <span class="num-comparison">0</span>
+            </div>
+            <div class="stats-swap">
+              swap: <span class="num-swap">0</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <div class="col animation-interpretation">
+        <div class="content-wrapper">
+          <!--<h2>content</h2>-->
+          <div class="content">
+            <div class="sorting-theory">
+              <h4>算法思想</h4>
+              <span class="theory-content">将后面小的数值插入到比它大的元素前面，同时比它小的元素后面的位置。</span>
+            </div>
+            <div class="color-explanation-wrapper">
+              <h4>标记颜色说明</h4>
+              <div class="color-explanation-item">
+                <span class="color-brick green"></span>
+                <span class="color-explanation-content">当前循环作为基准进行比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick blue"></span>
+                <span class="color-explanation-content">当前循环中遍历到的另一个比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick purple"></span>
+                <span class="color-explanation-content">发生插入操作的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick bisque"></span>
+                <span class="color-explanation-content">每一次内部循环中，将要遍历的范围</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Merge sort -->
-    <section class="section">
-      <h3>Merge sort</h3>
-      <div class="showcase">
-        <div class="sorting-display">
-          <div class="sorting-wrapper merge-sort">
-
-          </div>
-          <br>
-          <div class="sort-ctrl">
-            <button class="button start-button">start sorting</button>
-            <button class="button reset-button">reset</button>
+    <div class="row">
+      <div class="col animation">
+        <div class="animation-wrapper">
+          <h2 align="center">Merge sort</h2>
+          <div class="showcase">
+            <div class="sorting-display">
+              <div class="sorting-wrapper merge-sort">
+                <!-- sorting items will display here -->
+              </div>
+              <br>
+              <div class="sort-ctrl" align="center">
+                <button class="button start-button">Start</button>
+                <button class="button reset-button">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sorting-stats">
-          <div class="stats-comparison">
-            comparison: <span class="num-comparison">0</span>
-          </div>
-          <div class="stats-swap">
-            insert: <span class="num-swap">0</span>
+        <div class="sorting-stats-wrapper">
+          <div class="sorting-stats">
+            <div class="stats-comparison">
+              comparison: <span class="num-comparison">0</span>
+            </div>
+            <div class="stats-swap">
+              swap: <span class="num-swap">0</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+
+      <div class="col animation-interpretation">
+        <div class="content-wrapper">
+          <!--<h2>content</h2>-->
+          <div class="content">
+            <div class="sorting-theory">
+              <h4>算法思想</h4>
+              <span class="theory-content">
+                递归的前半部分，将要排序的数组拆分成尽可能少元素的两部分，直到拆分的数组只有一个元素。
+                递归的后半部分，根据两个拆分数组之间的元素大小关系进行排列，然后合并成一个新的数组，并把这个合并好且有序的数组依次返回。
+              </span>
+            </div>
+            <div class="color-explanation-wrapper">
+              <h4>标记颜色说明</h4>
+              <div class="color-explanation-item">
+                <span class="color-brick green"></span>
+                <span class="color-explanation-content">当前循环作为基准进行比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick blue"></span>
+                <span class="color-explanation-content">当前循环中遍历到的另一个比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick purple"></span>
+                <span class="color-explanation-content">发生插入操作的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick bisque"></span>
+                <span class="color-explanation-content">
+                  每一次内部循环中，将要遍历的范围
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Quick sort -->
-    <section class="section">
-      <h3>Quick sort</h3>
-      <div class="showcase">
-        <div class="sorting-display">
-          <div class="sorting-wrapper quick-sort">
-
-          </div>
-          <br>
-          <div class="sort-ctrl">
-            <button class="button start-button">start sorting</button>
-            <button class="button reset-button">reset</button>
+    <div class="row">
+      <div class="col animation">
+        <div class="animation-wrapper">
+          <h2 align="center">Quick sort</h2>
+          <div class="showcase">
+            <div class="sorting-display">
+              <div class="sorting-wrapper quick-sort">
+                <!-- sorting items will display here -->
+              </div>
+              <br>
+              <div class="sort-ctrl" align="center">
+                <button class="button start-button">Start</button>
+                <button class="button reset-button">Reset</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="sorting-stats">
-          <div class="stats-comparison">
-            comparison: <span class="num-comparison">0</span>
-          </div>
-          <div class="stats-swap">
-            swap: <span class="num-swap">0</span>
+        <div class="sorting-stats-wrapper">
+          <div class="sorting-stats">
+            <div class="stats-comparison">
+              comparison: <span class="num-comparison">0</span>
+            </div>
+            <div class="stats-swap">
+              swap: <span class="num-swap">0</span>
+            </div>
           </div>
         </div>
       </div>
-    </section>
 
+      <div class="col animation-interpretation">
+        <div class="content-wrapper">
+          <div class="content">
+            <div class="sorting-theory">
+              <h4>算法思想</h4>
+              <span class="theory-content">
+                选择一个数值作为pivot(枢轴)，经过一些步骤，使得位于pivot左侧的所有数值都小于pivot，而位于pivot右侧的所有数值都大于pivot。
+              </span>
+            </div>
+            <div class="color-explanation-wrapper">
+              <h4>标记颜色说明</h4>
+              <div class="color-explanation-item">
+                <span class="color-brick green"></span>
+                <span class="color-explanation-content">当前循环作为基准进行比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick blue"></span>
+                <span class="color-explanation-content">当前循环中遍历到的另一个比较的item</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick purple"></span>
+                <span class="color-explanation-content">pivot(枢轴)</span>
+              </div>
+              <div class="color-explanation-item">
+                <span class="color-brick bisque"></span>
+                <span class="color-explanation-content">每一次内部循环中，将要遍历的范围</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!--<script src="scripts/app.js"></script>-->
 </body>
 </html>

@@ -172,6 +172,8 @@ async function insertSort(parentNode) {
         // 标记即将因节点插入而改变位置的item
         markComparisonItem(parentNode).markAreaItem(j);
       }
+      // 算上跳出循环的那一次比较
+      statsDisplay(parentNode).comparisonAdd();
 
       // 标记即将要插入的item
       markComparisonItem(parentNode).markPurple(i);
@@ -366,12 +368,14 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
 
         high -= 1;
       }
+      statsDisplay(parentNode).comparisonAdd();
 
       // 防止下标相等时，出现无用交换的等待
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
         markComparisonItem(parentNode).markTwoItem(low, high);
 
+        await delay(500);
         await swap(low, high, parentNode);
 
         // swap之后的500ms的暂停
@@ -380,29 +384,34 @@ async function quickSort(parentNode, low = 0, high = parentNode.children.length 
         await delay(500);
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
+        await delay(500);
         arr = Array.from(parentNode.children);
       }
 
       while (low < high && getItemValue(arr, low) <= pivotValue) {
         statsDisplay(parentNode).comparisonAdd();
 
-        markComparisonItem(parentNode).markTwoItem(low, pivotIndex);
+        // 因为一开始pivotIndex = low，所以item只能表现出一种颜色
+        markComparisonItem(parentNode).markTwoItem(pivotIndex, low);
         await delay(500);
-        markComparisonItem(parentNode).removeTwoMark(low, pivotIndex);
+        markComparisonItem(parentNode).removeTwoMark(pivotIndex, low);
 
         low += 1;
       }
+      statsDisplay(parentNode).comparisonAdd();
 
       // 防止下标相等时，出现无用交换的等待
       if (low !== high) {
         statsDisplay(parentNode).swapAdd();
         markComparisonItem(parentNode).markTwoItem(low, high);
 
+        await delay(500);
         await swap(low, high, parentNode);
 
         await delay(500);
         markComparisonItem(parentNode).removeTwoMark(high, low);
 
+        await delay(500);
         arr = Array.from(parentNode.children);
       }
     }
@@ -643,9 +652,9 @@ function clear(parentNode) {
   }
  */
 function statsDisplay(parentNode) {
-  const $showcaseWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.showcase');
-  const $numberOfComparison = DOM_OperationModule.query($showcaseWrapper, '.num-comparison');
-  const $numberOfSwap = DOM_OperationModule.query($showcaseWrapper, '.num-swap');
+  const $columnWrapper = DOM_OperationModule.findClosestAncestor(parentNode, '.col');
+  const $numberOfComparison = DOM_OperationModule.query($columnWrapper, '.num-comparison');
+  const $numberOfSwap = DOM_OperationModule.query($columnWrapper, '.num-swap');
   let comparisonCounter = parseInt($numberOfComparison.textContent);
   let swapCounter = parseInt($numberOfSwap.textContent);
 
