@@ -22,7 +22,7 @@
 > Tips：下方列表选项的前面带三角形，表示有折叠内容
 
 - <details>
-    <summary>找到一个可用的排序代码，可将乱序的数组进行排序</summary>
+    <summary>找到一个可用的排序代码，可将乱序的数组进行排序。</summary>
     <ul>
       <li>可以是伪代码或者其他编程语言写的排序代码，再用 JS 实现一遍</li>
     </ul>
@@ -36,11 +36,11 @@
       <li>使用异步编程确保节点交换(插入)操作发生在动画执行完毕之后，这样就可以将节点移动动画和节点交换(插入)操作很好的结合起来</li>
       <li>
         <details>
-          <summary>swap() 与 insert() 的实现细节</summary>
+          <summary><code>swap()</code> 与 <code>insert()</code> 的实现细节</summary>
           <ul>
             <li>关键点一: 使用 transform 的 translateX 实现节点的平移动画（transform 属性不会改变节点在 DOM 中的实际位置，也不会影响其他节点位置）。</li>
-            <li>关键点二: 使用 `animation = el.animate()`来执行动画，再把节点交换(插入)操作放在`animation.onfinish`的回调函数中, 以确保节点交换(插入)操作发生在动画执行完毕之后。</li>
-            <li>关键点三：`swap()`与`insert()`返回一个 promise，以供在相应排序函数中进行调用。将`resolve()`写在`animation.onfinish`中，节点交换(插入)操作之后的地方。</li>
+            <li>关键点二: 使用<code>animation = el.animate()</code>来执行动画，再把节点交换(插入)操作放在<code>animation.onfinish</code>的回调函数中, 以确保节点交换(插入)操作发生在动画执行完毕之后。</li>
+            <li>关键点三：<code>swap()</code>与<code>insert()</code>返回一个 promise，以供在相应排序函数中进行调用。将<code>resolve()</code>写在<code>animation.onfinish</code>中，节点交换(插入)操作之后的地方。</li>
           </ul>
         </details>
       </li>
