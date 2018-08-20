@@ -74,7 +74,7 @@
 
 ## 相关资料
 
-- [项目中用到的排序代码（项目的实现是基于这些代码的，附带个人总结的注释与算法思想）](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)
+- [Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md): 项目的实现是基于这些代码的，附带个人总结的注释与算法思想
 
 ## 参考资料
 
