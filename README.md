@@ -6,6 +6,12 @@
 
 [Demo url](https://nevenleung.github.io/sorting-algorithms-visualization/)
 
+![](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/demo/insert-sort.gif)
+
+![](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/demo/merge-sort.gif)
+
+![](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/demo/quick-sort.gif)
+
 ## 功能列表
 
 - [x] 排序算法的动画
@@ -64,7 +70,7 @@
 
 - 看几次[Demo](https://nevenleung.github.io/sorting-algorithms-visualization/)的排序动画，先建立起一个大致的印象。
 - 在看过 Demo 的基础上，配合[项目中用到的排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)，理解其中的排序代码（理解其中的注释与算法思想），代码是怎样逐步使数组变得有序的。
-- 对比[项目中用到的排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)与[app.js](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/app.js)，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
+- 对比[项目中用到的排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)与[项目的实际排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/sorting/)，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
 
 ## 相关资料
 
@@ -76,3 +82,18 @@
 - [sorting.at](http://sorting.at/)
 - [排序算法 - 维基百科](https://zh.wikipedia.org/wiki/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95)
 - [排序算法总结 - Cai's blog](http://ccc013.github.io/2016/11/20/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/)
+
+## scripts
+
+run dev server
+
+```
+npm run dev
+```
+
+build project files
+
+```
+npm run build
+```
+
