@@ -69,8 +69,8 @@
 ## 项目学习建议
 
 - 看几次[Demo](https://nevenleung.github.io/sorting-algorithms-visualization/)的排序动画，先建立起一个大致的印象。
-- 在看过 Demo 的基础上，配合[项目中用到的排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)，理解其中的排序代码（理解其中的注释与算法思想），代码是怎样逐步使数组变得有序的。
-- 对比[项目中用到的排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)与[项目的实际排序代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/sorting/)，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
+- 在看过 Demo 的基础上，配合[Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)，理解其中的排序代码（理解其中的注释与算法思想），代码是怎样逐步使数组变得有序的。
+- 对比[Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)与[src/scripts/sorting/](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/sorting/)中的文件，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
 
 ## 相关资料
 
