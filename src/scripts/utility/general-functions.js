@@ -3,7 +3,7 @@
  *
  * 通用函数模块
  *
- * @export { createNewElementNode, stringToBoolean }
+ * @export { createNewElementNode, stringToBoolean, delay }
  */
 
 // -------------------- module start -------------------
@@ -49,7 +49,22 @@ function stringToBoolean(str) {
   }
 }
 
+/**
+ * delay(timeout)
+ *
+ * 在异步代码中使后续代码延迟执行的函数
+ * -------------------------------
+ * 用作在排序过程中使代码暂停执行
+ * -------------------------------
+ * @param {Number} timeout  暂停时长，单位ms
+ * @return {Promise<undefined>}  一个延迟resolve的Promise
+ */
+function delay(timeout) {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 export {
   createNewElementNode,
-  stringToBoolean
+  stringToBoolean,
+  delay
 };
