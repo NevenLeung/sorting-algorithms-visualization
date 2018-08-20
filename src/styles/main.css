@@ -9,7 +9,7 @@
 
 .row {
   display: flex;
-  margin: 20px 10px;
+  margin: 20px 20px;
   padding: 5px 20px 10px 10px;
   border: 2px solid #eee;
   border-radius: 10px;
@@ -22,11 +22,6 @@
 
 .animation {
   flex: 3;
-  /*margin: 10px;*/
-  /*padding: 5px 20px 10px 10px;*/
-  /*border: 2px solid #eee;*/
-  /*border-radius: 10px;*/
-  /*justify-content: center;*/
 }
 
 .animation-interpretation {
@@ -74,8 +69,6 @@
 }
 
 .start-button {
-  /*color: #fff;*/
-  /*background-color: palegreen;*/
   background-color: #eee;
 }
 
@@ -102,6 +95,7 @@
   border: 1px solid #eee;
   border-radius: 10px;
   background-color: #FFFDD0;
+  line-height: 20px;
 }
 
 .sorting-wrapper {
@@ -112,6 +106,7 @@
 .item {
   width: 30px;
   margin: 0 2px;
+  padding: 4px 0;
   border-radius: 4px;
   background-color: salmon;
   text-align: center;
