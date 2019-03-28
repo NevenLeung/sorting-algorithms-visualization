@@ -11,8 +11,8 @@ let arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
 
 for (let i = 0, n = arr.length, temp; i < n; i += 1) {
   for (let j = n - 1; j > i; j -= 1) {
-    // 相邻两个item进行比较
-    // 如果前面的较大，则将两个item进行交换
+    // 相邻两个 item 进行比较
+    // 如果前面的较大，则对两个 item 进行交换
     if (arr[j - 1] > arr[j]) {
       temp = arr[j - 1];
       arr[j - 1] = arr[j];
@@ -38,12 +38,12 @@ for (let i = 0, n = arr.length; i < n - 1; i += 1) {
 
   // 在每一轮内层循环中，找出数值最小的下标
   for (let j = i + 1; j <= n - 1; j += 1) {
-    if (arr[min] > arr[j]) {
+    if (arr[j] < arr[min]) {
       min = j;
     }
   }
 
-  // 如果min不是在相应的位置，则把它交换到相应的次序位置
+  // 如果 min 不等于初始化时的 i，则把它交换到相应次序的位置
   if (min !== i) {
     let temp = arr[i];
     arr[i] = arr[min];
@@ -69,15 +69,15 @@ for (let i = 1, n = arr.length; i <= n - 1; i += 1) {
     let insertItem = arr[i];
     let j;
 
-    // 将比insert item大的数字往后移，以下循环的方向是从右往左
-    // 直到遇到一个比insert item小的数值，或者已经到了数组的最左边，结束循环
-    for (j = i - 1; j >= 0 && insertItem < arr[j]; j -= 1) {
+    // 将比 insert item 大的数字往后移，以下循环的方向是从右往左
+    // 直到遇到一个比 insert item 小的数值，或者已经到了数组的最左边，结束循环
+    for (j = i - 1; j >= 0 && arr[j] > insertItem ; j -= 1) {
       arr[j + 1] = arr[j];
     }
 
-    // 将insert item插入到循环结束前遍历到的最后一个位置
+    // 将 insert item 插入到循环结束前遍历到的最后一个位置
     // 因为遍历到的位置的数值都往后移了一位，所以循环结束前遍历到的最后一个位置应该是空的（数值是重复的）
-    // j要+1是因为上面的循环结束前，运行了一次j -= 1。因此循环结束后，j的值比想要的数组少了1，要把它加上
+    // j 要 +1 是因为上面的循环结束前，运行了一次 j -= 1。因此循环结束后，j 的值比想要的数字少了 1，要把它加上
     arr[j + 1] = insertItem;
   }
 }
@@ -98,11 +98,11 @@ let arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
 function mergeSort(arr) {
   const len = arr.length;
 
-  // arr的长度为1时，返回这个arr
-  // 注意最小的arr的长度只能为1，不会为0，前一次的arr的长度只可能是2或3
+  // arr 的长度为 1 时，返回这个 arr
+  // 注意最小的 arr 的长度只能为 1，不会为 0，前一次的 arr 的长度只可能是 2 或 3
   if (len < 2) return arr;
 
-  // 将数组分成两部分，利用js数组的slice()方法获得这两部分数组
+  // 将数组分成两部分，利用 js 数组的 slice() 方法获得这两部分数组
   const mid = len / 2;
   const left = arr.slice(0, mid);
   const right = arr.slice(mid);
@@ -114,12 +114,12 @@ function merge(left, right) {
   let result = [];
 
   while (left.length && right.length) {
-    // 这里巧妙地使用了shift()方法，将最小的数值从相应的数组中移出，然后添加到result中
+    // 这里巧妙地使用了 shift() 方法，将最小的数值从相应的数组头部中移出，然后添加到 result 中
     let min = left[0] <= right[0] ? left.shift() : right.shift();
     result.push(min);
   }
 
-  // 将排序好的result作为mergeSort()的运算结果返回
+  // 将排序好的 result 作为 mergeSort() 的运算结果返回
   return result.concat(left, right);
 }
 
@@ -141,7 +141,9 @@ function quickSort(low, high, list) {
   let pivot;
 
   if (low < high) {
-    // 进行排序的是partition()，quickSort()通过partition()找到pivot，不断地将数组越拆越小，直到每一部分数组都是有序的
+    // 进行排序的是 partition()，
+    // quickSort() 通过 partition() 找到 pivot，
+    // 不断地将数组越拆越小，直到每一部分数组都有序
     pivot = partition(low, high, list);
  
     quickSort(low, pivot - 1, list);
@@ -156,15 +158,15 @@ function partition(low, high, list) {
     while (low < high && list[high] >= pivotValue) {
       high -= 1;
     }
-    // 把比pivot小的值，与pivot的位置进行交换。交换后pivot的值，位于high
+    // 把比 pivot 小的值，与 pivot 的位置进行交换。交换后 pivot 的值，位于 high
     swap(low, high, list);
 
     while (low < high && list[low] <= pivotValue) {
       low += 1;
     }
-    // 把比pivot大的值，与pivot的位置进行交换。因为pivot的值已经位于high，
-    // 所以将两者交换，pivot又回到了左侧。如果找不到比pivot大的值，low的位置
-    // 就会不断向右移动，直到low == high，退出所有循环
+    // 把比 pivot 大的值，与 pivot 的位置进行交换。
+    // 因为 pivot 的值已经位于 high，所以将两者交换，pivot 又回到了左侧。
+    // 如果找不到比 pivot 大的值，low 的位置就会不断向右移动，直到 low === high，退出所有循环
     swap(low, high, list);
   }
 
