@@ -15,11 +15,11 @@
 ## 功能列表
 
 - [x] 排序算法的动画
-  - [x] 冒泡排序
-  - [x] 选择排序
-  - [x] 插入排序
-  - [x] 归并排序
-  - [x] 快速排序
+    - [x] 冒泡排序
+    - [x] 选择排序
+    - [x] 插入排序
+    - [x] 归并排序
+    - [x] 快速排序
 - [x] 比较元素、交换与插入元素、遍历范围元素的颜色标记
 - [x] 排序过程中，比较次数与交换、插入次数的统计
 
@@ -69,12 +69,12 @@
 ## 项目学习建议
 
 - 看几次[Demo](https://nevenleung.github.io/sorting-algorithms-visualization/)的排序动画，先建立起一个大致的印象。
-- 在看过 Demo 的基础上，配合[Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)，理解其中的排序代码（理解其中的注释与算法思想），代码是怎样逐步使数组变得有序的。
-- 对比[Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)与[src/scripts/sorting/](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/sorting/)中的文件，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
+- 在看过 Demo 的前提下，配合[Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md)，理解其中的排序代码（理解其中的注释与算法思想），代码是怎样逐步使数组变得有序的。
+- 对比[sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/sorting.md)与[src/scripts/sorting/中的代码](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/src/scripts/sorting/)，理解相应的排序代码（在前者中出现的注释大部分不会出现在后者中，太多注释会影响代码的可读性，出于这一点所作的选择）。
 
 ## 相关资料
 
-- [Sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/Sorting.md): 项目的实现是基于这些代码的，附带个人总结的注释与算法思想
+- [sorting.md](https://github.com/NevenLeung/sorting-algorithms-visualization/blob/master/sorting.md): 项目的实现是基于这些代码的，附带个人总结的注释与算法思想
 
 ## 参考资料
 
