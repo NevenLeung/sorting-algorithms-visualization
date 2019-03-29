@@ -89,8 +89,8 @@ console.log(arr);
 
 ### 算法思想
 
-递归的前半部分，将要排序的数组拆分成尽可能少元素的两部分，直到拆分的数组只有一个元素。  
-递归的后半部分，根据两个拆分数组之间的元素大小关系进行排列，然后合并成一个新的数组，并把这个合并好且有序的数组依次返回。
+`mergeSort()`的前半部分，将要排序的数组拆分成尽可能少元素的两部分，直到拆分的数组只有一个元素。
+`mergeSot()`的后半部分，开始执行`merge()`，根据两个拆分数组之间的元素大小关系进行排列，然后合并成一个新的数组，并把这个合并好且有序的数组依次返回。
 
 ```javascript
 let arr = [6, 4, 2, 9, 1, 10, 7, 3, 8, 5];
@@ -103,10 +103,12 @@ function mergeSort(arr) {
   if (len < 2) return arr;
 
   // 将数组分成两部分，利用 js 数组的 slice() 方法获得这两部分数组
+  // tips：slice() 在遇到非整数时，只取用它的整数部分
   const mid = len / 2;
   const left = arr.slice(0, mid);
   const right = arr.slice(mid);
 
+  // 理解这句代码是关键，它的执行过程，就是该算法思想的描述
   return merge(mergeSort(left), mergeSort(right));
 }
 
@@ -118,6 +120,11 @@ function merge(left, right) {
     let min = left[0] <= right[0] ? left.shift() : right.shift();
     result.push(min);
   }
+
+  // 当某一个数组的长度为 0，退出了 while 循环，而另一个数组仍然还有数值
+  // 需要把两个数组中剩余的数值，使用 concat() 添加到 result 的尾部
+  // 你可能会有个疑问：剩余的数值为什么一定会比前面的数值大？
+  // 如果剩余的比前面的小，它就已经被添加到 result 中，因此，剩余的值肯定会比 result 最后一个值大
 
   // 将排序好的 result 作为 mergeSort() 的运算结果返回
   return result.concat(left, right);
